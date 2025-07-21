@@ -3,4 +3,23 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">#6750A4</color>
+
+    <!-- Light theme colors -->
+    <color name="colorPrimaryVariant">#463770</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <color name="colorSecondary">#E8DEF8</color>
+    <color name="colorSecondaryVariant">#CAC4D0</color>
+
+    <color name="colorBackground">#FEF7FF</color>
+    <color name="cardBackground">#FFFFFF</color>
+
+    <color name="colorPrimaryText">#1C1B1F</color>
+    <color name="colorSecondaryText">#49454F</color>
+
+    <color name="successColor">#4CAF50</color>
+    <color name="warningColor">#FF9800</color>
+    <color name="errorColor">#F44336</color>
+    <color name="colorSurface">#FFFFFF</color> <!-- Light theme -->
+    <color name="colorSurfaceVariant">#F1F1F1</color>
 </resources>

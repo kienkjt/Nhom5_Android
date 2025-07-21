@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorSurface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header using MaterialToolbar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:title="Trang chủ sức khỏe"
+            app:titleTextColor="@android:color/black"
+            app:navigationIcon="@drawable/ic_health"
+            app:navigationIconTint="@color/colorPrimary"
+            app:menu="@menu/main_menu"/>
+
+        <!-- Health Summary Cards -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/colorSurfaceVariant"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.MediumComponent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tổng quan sức khỏe"
+                    style="@style/TextAppearance.MaterialComponents.Headline6"/>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="8dp"/>
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="2"
+                    android:alignmentMode="alignMargins"
+                    android:columnOrderPreserved="false">
+
+                    <!-- Weight Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="4dp"
+                        app:cardBackgroundColor="@color/colorSurface">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:gravity="center">
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/ic_weight"
+                                app:shapeAppearanceOverlay="@style/ShapeAppearance.CircleComponent"
+                                app:tint="@color/colorPrimary"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="65.5 kg"
+                                style="@style/TextAppearance.MaterialComponents.Headline5"
+                                android:layout_marginTop="8dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Cân nặng"
+                                style="@style/TextAppearance.MaterialComponents.Body2"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Heart Rate Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="4dp"
+                        app:cardBackgroundColor="@color/colorSurface">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:gravity="center">
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/ic_heart_rate"
+                                app:shapeAppearanceOverlay="@style/ShapeAppearance.CircleComponent"
+                                app:tint="@color/colorPrimary"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="72 bpm"
+                                style="@style/TextAppearance.MaterialComponents.Headline5"
+                                android:layout_marginTop="8dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Nhịp tim"
+                                style="@style/TextAppearance.MaterialComponents.Body2"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Blood Pressure Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="4dp"
+                        app:cardBackgroundColor="@color/colorSurface">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:gravity="center">
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/ic_blood_pressure"
+                                app:shapeAppearanceOverlay="@style/ShapeAppearance.CircleComponent"
+                                app:tint="@color/colorPrimary"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="120/80"
+                                style="@style/TextAppearance.MaterialComponents.Headline5"
+                                android:layout_marginTop="8dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Huyết áp"
+                                style="@style/TextAppearance.MaterialComponents.Body2"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Water Intake Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="4dp"
+                        app:cardBackgroundColor="@color/colorSurface">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp"
+                            android:gravity="center">
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/ic_water"
+                                app:shapeAppearanceOverlay="@style/ShapeAppearance.CircleComponent"
+                                app:tint="@color/colorPrimary"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1.8/2.0 L"
+                                style="@style/TextAppearance.MaterialComponents.Headline5"
+                                android:layout_marginTop="8dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Nước uống"
+                                style="@style/TextAppearance.MaterialComponents.Body2"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </GridLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Quick Actions -->
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Thao tác nhanh"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddRecord"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Thêm bản ghi"
+                app:icon="@drawable/ic_add"
+                app:iconTint="@color/colorPrimary"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSetGoal"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Đặt mục tiêu"
+                app:icon="@drawable/ic_target"
+                app:iconTint="@color/colorPrimary"/>
+        </LinearLayout>
+
+        <!-- Health Trends -->
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Xu hướng sức khỏe"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/colorSurfaceVariant"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.MediumComponent">
+
+            <!-- Using Material Components Chart -->
+            <com.google.android.material.chart.MaterialLineChart
+                android:id="@+id/healthTrendChart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:chartLineColor="@color/colorPrimary"
+                app:chartFillColor="@color/colorPrimaryContainer"
+                app:chartAxisLabelTextColor="@color/colorOnSurfaceVariant"
+                tools:ignore="MissingClass" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Recent Records -->
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Bản ghi gần đây"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recentRecordsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_record_material"/>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

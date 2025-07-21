@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="4dp"
+    app:cardBackgroundColor="@color/cardBackground"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Date Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="19dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_calendar"
+                android:tint="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/textDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="20/10/2023" />
+        </LinearLayout>
+
+        <!-- Health Data Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <!-- Weight -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cân nặng"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/textWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="14sp"
+                    tools:text="65.5 kg" />
+            </LinearLayout>
+
+            <!-- Blood Pressure -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Huyết áp"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/textBloodPressure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="14sp"
+                    tools:text="120/80" />
+            </LinearLayout>
+
+            <!-- Heart Rate -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nhịp tim"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/textHeartRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="14sp"
+                    tools:text="72 bpm" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Notes -->
+        <TextView
+            android:id="@+id/textNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/colorSecondaryText"
+            android:textSize="12sp"
+            tools:text="Ghi chú: Hôm nay cảm thấy khỏe hơn" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
