@@ -259,14 +259,15 @@
             app:shapeAppearanceOverlay="@style/ShapeAppearance.MediumComponent">
 
             <!-- Using Material Components Chart -->
-            <com.google.android.material.chart.MaterialLineChart
+<!--            KHONG CO CHART TRONG MATERIAL -->
+            <!-- <com.google.android.material.chart.MaterialLineChart
                 android:id="@+id/healthTrendChart"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:chartLineColor="@color/colorPrimary"
                 app:chartFillColor="@color/colorPrimaryContainer"
                 app:chartAxisLabelTextColor="@color/colorOnSurfaceVariant"
-                tools:ignore="MissingClass" />
+                tools:ignore="MissingClass" /> -->
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Recent Records -->

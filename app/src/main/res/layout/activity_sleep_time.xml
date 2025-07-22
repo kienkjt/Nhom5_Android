@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Theo dõi giấc ngủ"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Sleep Duration -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/HealthInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:hint="Thời gian ngủ (giờ)">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editSleepDuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Sleep Stages -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Các giai đoạn giấc ngủ"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+            <!-- Light Sleep -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="4dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ngủ nông"
+                    android:textColor="@color/colorPrimaryText" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editLightSleep"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:hint="giờ" />
+            </LinearLayout>
+
+            <!-- Deep Sleep -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="4dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ngủ sâu"
+                    android:textColor="@color/colorPrimaryText" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editDeepSleep"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:hint="giờ" />
+            </LinearLayout>
+
+            <!-- REM Sleep -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="4dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Giấc ngủ REM"
+                    android:textColor="@color/colorPrimaryText" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editREMSleep"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:hint="giờ" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Sleep Quality Rating -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:text="Chất lượng giấc ngủ"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <RatingBar
+                android:id="@+id/ratingSleepQuality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1"
+                android:rating="3" />
+        </LinearLayout>
+
+        <!-- Bedtime and Wake-up Time -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/HealthInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Giờ đi ngủ">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editBedtime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="time"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="-"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="20sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/HealthInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Giờ thức dậy">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editWakeupTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="time"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Sleep Reminder -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/checkboxSleepReminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nhắc nhở đi ngủ"
+                android:textColor="@color/colorPrimaryText" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editReminderTime"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:inputType="time"
+                android:enabled="false"
+                android:hint="Chọn giờ" />
+        </LinearLayout>
+
+        <!-- Sleep Notes -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/HealthInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Ghi chú về giấc ngủ">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editSleepNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:lines="3"
+                android:textSize="16sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Save Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSaveSleep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Lưu thông tin giấc ngủ"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:backgroundTint="@color/colorPrimary"
+            app:cornerRadius="8dp"
+            app:icon="@drawable/ic_save"
+            app:iconTint="@color/colorOnPrimary" />
+
+        <!-- Sleep History Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonViewSleepHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Xem lịch sử giấc ngủ"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:backgroundTint="@color/colorSecondary"
+            app:cornerRadius="8dp"
+            app:icon="@drawable/ic_history"
+            app:iconTint="@color/colorOnPrimary" />
+    </LinearLayout>
+</ScrollView>
