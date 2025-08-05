@@ -1,25 +1,26 @@
-package com.nhom5.healthtracking;
+package com.nhom5.healthtracking.auth;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.nhom5.healthtracking.R;
 
-public class RegisterTabFragment extends Fragment {
+public class LoginTabFragment extends Fragment {
 
-    TextInputEditText emailEditText, passwordEditText, confirmPasswordEditText;
-    CheckBox termsCheckBox;
-    Button registerButton;
+    TextInputEditText emailEditText, passwordEditText;
+    TextView forgotPasswordTextView;
+    Button loginButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_register_tab, container, false);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_login_tab, container, false);
 
         initViews(root);
         animateViews();
@@ -30,19 +31,17 @@ public class RegisterTabFragment extends Fragment {
     void initViews(ViewGroup root) {
         emailEditText = root.findViewById(R.id.email_edit_text);
         passwordEditText = root.findViewById(R.id.password_edit_text);
-        confirmPasswordEditText = root.findViewById(R.id.confirm_password_edit_text);
-        termsCheckBox = root.findViewById(R.id.terms_checkbox);
-        registerButton = root.findViewById(R.id.register_button);
+        loginButton = root.findViewById(R.id.login_button);
+        forgotPasswordTextView = root.findViewById(R.id.forgot_password_text);
     }
 
     void animateViews() {
-        float translationX = -800;
+        float translationX = 800;
         View[] views = {
                 emailEditText,
                 passwordEditText,
-                confirmPasswordEditText,
-                termsCheckBox,
-                registerButton
+                forgotPasswordTextView,
+                loginButton
         };
         for (View view : views) {
             view.setTranslationX(translationX);

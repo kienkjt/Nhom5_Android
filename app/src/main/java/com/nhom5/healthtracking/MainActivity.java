@@ -2,12 +2,12 @@ package com.nhom5.healthtracking;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nhom5.healthtracking.auth.AuthActivity;
 
 public class MainActivity extends AppCompatActivity {
     

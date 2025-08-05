@@ -1,4 +1,4 @@
-package com.nhom5.healthtracking;
+package com.nhom5.healthtracking.auth;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.nhom5.healthtracking.R;
 
 public class AuthActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.nhom5.healthtracking;
+package com.nhom5.healthtracking.auth;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
