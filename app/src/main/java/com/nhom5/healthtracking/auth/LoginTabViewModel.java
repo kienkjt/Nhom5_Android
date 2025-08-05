@@ -165,10 +165,6 @@ public class LoginTabViewModel extends AndroidViewModel {
         return loggedInUser;
     }
 
-    public UserRepository getUserRepository() {
-        return userRepository;
-    }
-
     // Clear error message
     public void clearError() {
         errorMessage.setValue(null);

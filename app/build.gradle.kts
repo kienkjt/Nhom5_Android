@@ -37,9 +37,12 @@ dependencies {
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
     val room_version = "2.7.2"
+    val bcrypt_version = "0.4"
 
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
+   implementation("org.mindrot:jbcrypt:$bcrypt_version")
+
 
     implementation(libs.appcompat)
     implementation(libs.material)

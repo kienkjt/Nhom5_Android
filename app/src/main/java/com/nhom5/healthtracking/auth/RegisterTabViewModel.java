@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.nhom5.healthtracking.data.local.AppDatabase;
 import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.data.repository.UserRepository;
+import com.nhom5.healthtracking.util.HashUtils;
 
 public class RegisterTabViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
@@ -88,7 +89,8 @@ public class RegisterTabViewModel extends AndroidViewModel {
                 }
                 
                 // Create and insert new user
-                User newUser = new User(email, password);
+                String hashedPassword = HashUtils.hashPassword(password);
+                User newUser = new User(email, hashedPassword);
                 userRepository.insert(newUser);
                 
                 return "SUCCESS";
@@ -122,10 +124,6 @@ public class RegisterTabViewModel extends AndroidViewModel {
 
     public MutableLiveData<Boolean> getRegistrationSuccess() {
         return registrationSuccess;
-    }
-
-    public UserRepository getUserRepository() {
-        return userRepository;
     }
 
     // Clear error message

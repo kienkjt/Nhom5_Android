@@ -2,6 +2,8 @@ package com.nhom5.healthtracking.data.repository;
 
 import com.nhom5.healthtracking.data.local.dao.UserDao;
 import com.nhom5.healthtracking.data.local.entity.User;
+import com.nhom5.healthtracking.util.HashUtils;
+
 import java.util.List;
 
 public class UserRepository {
@@ -50,7 +52,7 @@ public class UserRepository {
     // Authenticate user with email and password
     public User authenticate(String email, String password) {
         User user = userDao.getUserByEmail(email);
-        if (user != null && user.password.equals(password)) {
+        if (user != null && HashUtils.verifyPassword(password, user.password)) {
             return user;
         }
         return null;
