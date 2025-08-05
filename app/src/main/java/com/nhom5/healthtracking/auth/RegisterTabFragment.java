@@ -7,7 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.nhom5.healthtracking.R;
@@ -17,15 +21,26 @@ public class RegisterTabFragment extends Fragment {
     TextInputEditText emailEditText, passwordEditText, confirmPasswordEditText;
     CheckBox termsCheckBox;
     Button registerButton;
+    RegisterTabViewModel mViewModel;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_register_tab, container, false);
 
         initViews(root);
         animateViews();
 
         return root;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        RegisterTabViewModel.Factory factory = new RegisterTabViewModel.Factory(requireActivity().getApplication());
+        mViewModel = new ViewModelProvider(this, factory).get(RegisterTabViewModel.class);
+        // TODO: Use the ViewModel
     }
 
     void initViews(ViewGroup root) {
@@ -58,6 +73,6 @@ public class RegisterTabFragment extends Fragment {
                     .setStartDelay(delay)
                     .start();
             delay += 100;
-        }   
+        }
     }
 }

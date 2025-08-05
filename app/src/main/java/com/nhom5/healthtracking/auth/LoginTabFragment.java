@@ -1,6 +1,10 @@
 package com.nhom5.healthtracking.auth;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +21,26 @@ public class LoginTabFragment extends Fragment {
     TextInputEditText emailEditText, passwordEditText;
     TextView forgotPasswordTextView;
     Button loginButton;
+    LoginTabViewModel mViewModel;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_login_tab, container, false);
 
         initViews(root);
         animateViews();
 
         return root;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        LoginTabViewModel.Factory factory = new LoginTabViewModel.Factory(requireActivity().getApplication());
+        mViewModel = new ViewModelProvider(this, factory).get(LoginTabViewModel.class);
+        // TODO: Use the ViewModel
     }
 
     void initViews(ViewGroup root) {
