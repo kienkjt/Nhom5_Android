@@ -2,4 +2,25 @@
     <string name="app_name">Health Tracking</string>
     <string name="default_web_client_id">437445237941-t3po1b075c9tlper543299cckp09npnt.apps.googleusercontent.com</string>
     <string name="google_sign_in_button_text">Tiếp tục với Google</string>
+
+    <!-- Onboarding Step 1 -->
+    <string name="onboarding_step_1_of_3">Bước 1/3</string>
+    <string name="personal_information">Thông tin cá nhân</string>
+    <string name="lets_get_to_know_you">Hãy cùng tìm hiểu bạn hơn</string>
+    <string name="personal_info_subtitle">Chúng tôi cần một số thông tin cơ bản</string>
+
+    <string name="full_name">Họ và tên</string>
+    <string name="full_name_hint">Nhập họ và tên của bạn</string>
+    <string name="gender">Giới tính</string>
+    <string name="gender_male">Nam</string>
+    <string name="gender_female">Nữ</string>
+    <string name="gender_other">Khác</string>
+    <string name="date_of_birth">Ngày sinh</string>
+    <string name="date_of_birth_hint">Chọn ngày sinh của bạn</string>
+
+    <string name="continue_button">Tiếp tục</string>
+
+    <string name="error_name_required">Họ và tên là bắt buộc</string>
+    <string name="error_gender_required">Vui lòng chọn giới tính của bạn</string>
+    <string name="error_dob_required">Ngày sinh là bắt buộc</string>
 </resources>
