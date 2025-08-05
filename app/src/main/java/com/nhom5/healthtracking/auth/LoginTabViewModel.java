@@ -14,10 +14,11 @@ import com.nhom5.healthtracking.data.local.AppDatabase;
 import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.data.repository.UserRepository;
 import com.nhom5.healthtracking.constant.AuthConstant;
+import com.nhom5.healthtracking.util.SessionManager;
 
 public class LoginTabViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
-    private final SharedPreferences sharedPreferences;
+    private final SessionManager sessionManager;
     
     // LiveData for UI updates
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
@@ -29,13 +30,13 @@ public class LoginTabViewModel extends AndroidViewModel {
         super(application);
         AppDatabase database = AppDatabase.getDatabase(application);
         this.userRepository = new UserRepository(database.userDao());
-        this.sharedPreferences = application.getSharedPreferences("HealthTracking", Context.MODE_PRIVATE);
+        this.sessionManager = SessionManager.getInstance(application);
     }
 
     public LoginTabViewModel(Application application, UserRepository userRepository) {
         super(application);
         this.userRepository = userRepository;
-        this.sharedPreferences = application.getSharedPreferences("HealthTracking", Context.MODE_PRIVATE);
+        this.sessionManager = SessionManager.getInstance(application);
     }
 
     // Login user
@@ -98,8 +99,8 @@ public class LoginTabViewModel extends AndroidViewModel {
             isLoading.setValue(false);
             
             if (user != null) {
-                // Save user session
-                saveUserSession(user);
+                // Save user session securely
+                sessionManager.saveUserSession(user);
                 
                 loggedInUser.setValue(user);
                 loginSuccess.setValue(true);
@@ -111,42 +112,40 @@ public class LoginTabViewModel extends AndroidViewModel {
         }
     }
 
-    // Save user session to SharedPreferences
-    private void saveUserSession(User user) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("user_id", user.id);
-        editor.putString("user_email", user.email);
-        editor.putString("user_name", user.name != null ? user.name : "");
-        editor.putBoolean(AuthConstant.SP_IS_LOGGED_IN_KEY, true);
-        editor.apply();
-    }
-
     // Check if user is already logged in
     public boolean isUserLoggedIn() {
-        return sharedPreferences.getBoolean(AuthConstant.SP_IS_LOGGED_IN_KEY, false);
+        return sessionManager.isUserLoggedIn() && sessionManager.isSessionValid();
     }
 
-    // Get logged in user info from SharedPreferences
+    // Get logged in user info from secure session
     public User getLoggedInUserFromPrefs() {
         if (!isUserLoggedIn()) {
             return null;
         }
-        
-        User user = new User();
-        user.id = sharedPreferences.getInt("user_id", 0);
-        user.email = sharedPreferences.getString("user_email", "");
-        user.name = sharedPreferences.getString("user_name", "");
-        return user;
+        return sessionManager.getLoggedInUser();
     }
 
     // Logout user
     public void logoutUser() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+        sessionManager.clearSession();
         
         loggedInUser.setValue(null);
         loginSuccess.setValue(false);
+    }
+
+    // Check if session is valid and refresh if needed
+    public boolean isSessionValid() {
+        return sessionManager.isSessionValid();
+    }
+
+    // Update session timestamp
+    public void refreshSession() {
+        sessionManager.updateSessionTime();
+    }
+
+    // Get session token
+    public String getSessionToken() {
+        return sessionManager.getSessionToken();
     }
 
     // Getters for LiveData

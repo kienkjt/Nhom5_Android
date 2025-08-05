@@ -52,7 +52,7 @@ public class UserRepository {
     // Authenticate user with email and password
     public User authenticate(String email, String password) {
         User user = userDao.getUserByEmail(email);
-        if (user != null && HashUtils.verifyPassword(password, user.password)) {
+        if (user != null && HashUtils.verify(password, user.password)) {
             return user;
         }
         return null;

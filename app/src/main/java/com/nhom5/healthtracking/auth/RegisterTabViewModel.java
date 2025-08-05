@@ -90,7 +90,7 @@ public class RegisterTabViewModel extends AndroidViewModel {
                 }
                 
                 // Create and insert new user
-                String hashedPassword = HashUtils.hashPassword(password);
+                String hashedPassword = HashUtils.hash(password);
                 User newUser = new User(email, hashedPassword);
                 userRepository.insert(newUser);
                 
