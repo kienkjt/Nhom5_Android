@@ -12,6 +12,7 @@ import com.nhom5.healthtracking.data.local.AppDatabase;
 import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.data.repository.UserRepository;
 import com.nhom5.healthtracking.util.HashUtils;
+import com.nhom5.healthtracking.constant.AuthConstant;
 
 public class RegisterTabViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
@@ -60,8 +61,8 @@ public class RegisterTabViewModel extends AndroidViewModel {
             return "Password is required";
         }
         
-        if (password.length() < 6) {
-            return "Password must be at least 6 characters";
+        if (!password.matches(AuthConstant.PASSWORD_PATTERN)) {
+            return "Password must be at least 8 characters and contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 special character, and no whitespace";
         }
         
         if (!password.equals(confirmPassword)) {

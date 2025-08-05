@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.nhom5.healthtracking.data.local.AppDatabase;
 import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.data.repository.UserRepository;
+import com.nhom5.healthtracking.constant.AuthConstant;
 
 public class LoginTabViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
@@ -116,13 +117,13 @@ public class LoginTabViewModel extends AndroidViewModel {
         editor.putInt("user_id", user.id);
         editor.putString("user_email", user.email);
         editor.putString("user_name", user.name != null ? user.name : "");
-        editor.putBoolean("is_logged_in", true);
+        editor.putBoolean(AuthConstant.SP_IS_LOGGED_IN_KEY, true);
         editor.apply();
     }
 
     // Check if user is already logged in
     public boolean isUserLoggedIn() {
-        return sharedPreferences.getBoolean("is_logged_in", false);
+        return sharedPreferences.getBoolean(AuthConstant.SP_IS_LOGGED_IN_KEY, false);
     }
 
     // Get logged in user info from SharedPreferences
