@@ -1,6 +1,8 @@
 package com.nhom5.healthtracking.auth;
+
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,10 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.nhom5.healthtracking.MainActivity;
 import com.nhom5.healthtracking.R;
 
 public class LoginTabFragment extends Fragment {
@@ -31,6 +35,7 @@ public class LoginTabFragment extends Fragment {
 
         initViews(root);
         animateViews();
+        setupClickListeners();
 
         return root;
     }
@@ -40,7 +45,9 @@ public class LoginTabFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         LoginTabViewModel.Factory factory = new LoginTabViewModel.Factory(requireActivity().getApplication());
         mViewModel = new ViewModelProvider(this, factory).get(LoginTabViewModel.class);
-        // TODO: Use the ViewModel
+        
+        observeViewModel();
+        checkIfAlreadyLoggedIn();
     }
 
     void initViews(ViewGroup root) {
@@ -48,6 +55,79 @@ public class LoginTabFragment extends Fragment {
         passwordEditText = root.findViewById(R.id.password_edit_text);
         loginButton = root.findViewById(R.id.login_button);
         forgotPasswordTextView = root.findViewById(R.id.forgot_password_text);
+    }
+
+    void setupClickListeners() {
+        loginButton.setOnClickListener(v -> performLogin());
+        
+        forgotPasswordTextView.setOnClickListener(v -> {
+            // Handle forgot password - for now just show a message
+            Toast.makeText(getContext(), "Forgot password functionality will be implemented soon", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    void observeViewModel() {
+        // Observe loading state
+        mViewModel.getIsLoading().observe(this, isLoading -> {
+            if (isLoading != null) {
+                loginButton.setEnabled(!isLoading);
+                loginButton.setText(isLoading ? "Logging in..." : "Login");
+            }
+        });
+
+        // Observe error messages
+        mViewModel.getErrorMessage().observe(this, errorMessage -> {
+            if (errorMessage != null) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                mViewModel.clearError(); // Clear error after showing
+            }
+        });
+
+        // Observe login success
+        mViewModel.getLoginSuccess().observe(this, success -> {
+            if (success != null && success) {
+                Toast.makeText(getContext(), "Login successful!", Toast.LENGTH_SHORT).show();
+                navigateToMainActivity();
+            }
+        });
+
+        // Observe logged in user
+        mViewModel.getLoggedInUser().observe(this, user -> {
+            if (user != null) {
+                String welcomeMessage = "Welcome " + (user.name != null && !user.name.isEmpty() ? user.name : user.email) + "!";
+                Toast.makeText(getContext(), welcomeMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    void checkIfAlreadyLoggedIn() {
+        // Check if user is already logged in
+        if (mViewModel.isUserLoggedIn()) {
+            navigateToMainActivity();
+        }
+    }
+
+    void performLogin() {
+        String email = emailEditText.getText() != null ? emailEditText.getText().toString().trim() : "";
+        String password = passwordEditText.getText() != null ? passwordEditText.getText().toString() : "";
+
+        mViewModel.loginUser(email, password);
+    }
+
+    void navigateToMainActivity() {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        
+        // Finish the auth activity
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+    }
+
+    void clearForm() {
+        emailEditText.setText("");
+        passwordEditText.setText("");
     }
 
     void animateViews() {
