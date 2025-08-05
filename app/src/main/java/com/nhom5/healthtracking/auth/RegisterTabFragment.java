@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -31,6 +31,7 @@ public class RegisterTabFragment extends Fragment {
 
         initViews(root);
         animateViews();
+        setupClickListeners();
 
         return root;
     }
@@ -40,7 +41,8 @@ public class RegisterTabFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         RegisterTabViewModel.Factory factory = new RegisterTabViewModel.Factory(requireActivity().getApplication());
         mViewModel = new ViewModelProvider(this, factory).get(RegisterTabViewModel.class);
-        // TODO: Use the ViewModel
+        
+        observeViewModel();
     }
 
     void initViews(ViewGroup root) {
@@ -49,6 +51,54 @@ public class RegisterTabFragment extends Fragment {
         confirmPasswordEditText = root.findViewById(R.id.confirm_password_edit_text);
         termsCheckBox = root.findViewById(R.id.terms_checkbox);
         registerButton = root.findViewById(R.id.register_button);
+    }
+
+    void setupClickListeners() {
+        registerButton.setOnClickListener(v -> performRegistration());
+    }
+
+    void observeViewModel() {
+        // Observe loading state
+        mViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading != null) {
+                registerButton.setEnabled(!isLoading);
+                registerButton.setText(isLoading ? "Registering..." : "Register");
+            }
+        });
+
+        // Observe error messages
+        mViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                mViewModel.clearError(); // Clear error after showing
+            }
+        });
+
+        // Observe registration success
+        mViewModel.getRegistrationSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (success != null && success) {
+                Toast.makeText(getContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
+                clearForm();
+                // Navigate to login tab or main activity
+                // You can add navigation logic here
+            }
+        });
+    }
+
+    void performRegistration() {
+        String email = emailEditText.getText() != null ? emailEditText.getText().toString().trim() : "";
+        String password = passwordEditText.getText() != null ? passwordEditText.getText().toString() : "";
+        String confirmPassword = confirmPasswordEditText.getText() != null ? confirmPasswordEditText.getText().toString() : "";
+        boolean acceptedTerms = termsCheckBox.isChecked();
+
+        mViewModel.registerUser(email, password, confirmPassword, acceptedTerms);
+    }
+
+    void clearForm() {
+        emailEditText.setText("");
+        passwordEditText.setText("");
+        confirmPasswordEditText.setText("");
+        termsCheckBox.setChecked(false);
     }
 
     void animateViews() {
