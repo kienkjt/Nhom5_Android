@@ -20,6 +20,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.nhom5.healthtracking.R;
+import com.nhom5.healthtracking.onboarding.OnboardingActivity;
+import com.nhom5.healthtracking.util.OnboardingManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,6 +30,7 @@ import java.util.Locale;
 public class PersonalInfoFragment extends Fragment {
 
     private PersonalInfoViewModel mViewModel;
+    private OnboardingManager onboardingManager;
     
     // Views
     private TextInputLayout tilFullName;
@@ -55,6 +58,11 @@ public class PersonalInfoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
+        // Initialize OnboardingManager
+        if (getActivity() instanceof OnboardingActivity) {
+            onboardingManager = ((OnboardingActivity) getActivity()).getOnboardingManager();
+        }
+        
         // Initialize views
         initViews(view);
         
@@ -64,6 +72,9 @@ public class PersonalInfoFragment extends Fragment {
         
         // Setup listeners
         setupListeners();
+        
+        // Load saved data if exists
+        loadSavedData();
     }
 
     @Override
@@ -79,6 +90,37 @@ public class PersonalInfoFragment extends Fragment {
         tilDateOfBirth = view.findViewById(R.id.til_date_of_birth);
         etDateOfBirth = view.findViewById(R.id.et_date_of_birth);
         btnContinue = view.findViewById(R.id.btn_continue);
+    }
+    
+    private void loadSavedData() {
+        if (onboardingManager == null) return;
+        
+        // Load saved personal info
+        String savedName = onboardingManager.getFullName();
+        String savedGender = onboardingManager.getGender();
+        String savedDateOfBirth = onboardingManager.getDateOfBirth();
+        
+        if (!savedName.isEmpty()) {
+            etFullName.setText(savedName);
+        }
+        
+        if (!savedGender.isEmpty()) {
+            switch (savedGender) {
+                case "Male":
+                    rgGender.check(R.id.rb_male);
+                    break;
+                case "Female":
+                    rgGender.check(R.id.rb_female);
+                    break;
+                case "Other":
+                    rgGender.check(R.id.rb_other);
+                    break;
+            }
+        }
+        
+        if (!savedDateOfBirth.isEmpty()) {
+            etDateOfBirth.setText(savedDateOfBirth);
+        }
     }
     
     private void setupListeners() {
@@ -122,10 +164,6 @@ public class PersonalInfoFragment extends Fragment {
         Calendar minDate = Calendar.getInstance();
         minDate.add(Calendar.YEAR, -100);
         datePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
-
-        Calendar maxDate = Calendar.getInstance();
-        maxDate.add(Calendar.YEAR, -10);
-        datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
         
         datePickerDialog.show();
     }
@@ -169,9 +207,14 @@ public class PersonalInfoFragment extends Fragment {
         String gender = getSelectedGender();
         String dateOfBirth = etDateOfBirth.getText().toString().trim();
         
-        // Save to ViewModel or SharedPreferences
+        // Save to ViewModel
         if (mViewModel != null) {
             mViewModel.savePersonalInfo(fullName, gender, dateOfBirth);
+        }
+        
+        // Save to OnboardingManager (SharedPreferences)
+        if (onboardingManager != null) {
+            onboardingManager.savePersonalInfo(fullName, gender, dateOfBirth);
         }
     }
     
