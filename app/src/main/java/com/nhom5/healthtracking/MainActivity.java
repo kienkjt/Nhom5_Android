@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nhom5.healthtracking.auth.AuthActivity;
+import com.nhom5.healthtracking.onboarding.OnboardingActivity;
 
 public class MainActivity extends AppCompatActivity {
     
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupClickListeners() {
         if (fabAuth != null) {
             fabAuth.setOnClickListener(v -> {
-                Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+                Intent intent = new Intent(MainActivity.this, OnboardingActivity.class);
                 startActivity(intent);
             });
         }
