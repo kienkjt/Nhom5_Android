@@ -12,14 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyHealth"
         tools:targetApi="31">
+        <activity
+            android:name=".water_volume_chart"
+            android:exported="false" />
+        <activity
+            android:name=".water_Monitoring"
+            android:exported="false" />
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AddRecordActivity" />
-<!--        <activity android:name=".activities.StatisticsActivity" />-->
+        <activity android:name=".activities.AddRecordActivity" /> <!-- <activity android:name=".activities.StatisticsActivity" /> -->
         <receiver android:name=".services.ReminderService" />
     </application>
 
