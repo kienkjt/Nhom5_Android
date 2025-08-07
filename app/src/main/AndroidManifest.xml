@@ -15,14 +15,19 @@
             android:name=".auth.AuthActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".water.water_volume_chart"
+            android:exported="false" />
+        <activity
+            android:name=".water.water_Monitoring"
+            android:exported="false" />
+        <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".weight.WeightTrackerActivity" android:exported="false" />
     </application>
+
 </manifest>
