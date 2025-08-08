@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
@@ -14,219 +12,202 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Time Range Selector -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Thống kê hàng ngày"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Date Selector -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSelectDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Chọn ngày"
+            app:icon="@drawable/ic_calendar"
+            app:iconTint="@color/colorOnPrimary" />
+
+        <!-- Stats Cards -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/cardBackground"
+            app:cardBackgroundColor="@color/colorSurface"
             app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
+            app:cardElevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp">
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <com.google.android.material.button.MaterialButton
-                    style="@style/HealthTimeRangeButton"
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Tuần" />
+                    android:layout_marginBottom="8dp"
+                    android:text="Tổng quan"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
-                    style="@style/HealthTimeRangeButton"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="Tháng" />
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    style="@style/HealthTimeRangeButton"
-                    android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cân nặng:"
+                        android:textColor="@color/colorSecondaryText" />
+
+                    <TextView
+                        android:id="@+id/textWeightStat"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="-- kg"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/colorPrimaryText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="Năm" />
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Nước uống:"
+                        android:textColor="@color/colorSecondaryText" />
+
+                    <TextView
+                        android:id="@+id/textWaterStat"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="-- ml"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/colorPrimaryText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Bước chân:"
+                        android:textColor="@color/colorSecondaryText" />
+
+                    <TextView
+                        android:id="@+id/textStepsStat"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="-- bước"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/colorPrimaryText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Giấc ngủ:"
+                        android:textColor="@color/colorSecondaryText" />
+
+                    <TextView
+                        android:id="@+id/textSleepStat"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="-- giờ"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/colorPrimaryText" />
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Weight Statistics -->
-        <com.google.android.material.card.MaterialCardView
+        <!-- Charts Section -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Biểu đồ thống kê"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Weight Chart -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/cardBackground"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            app:cardBackgroundColor="@color/colorSurface"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Thống kê cân nặng"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <!-- Sử dụng View thay thế tạm thời -->
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/weightChartPlaceholder"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_chart_placeholder"
-                    android:contentDescription="Biểu đồ cân nặng"
-                    tools:ignore="MissingClass" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Trung bình"
-                            android:textColor="@color/colorSecondaryText"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/textAvgWeight"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textColor="@color/colorPrimaryText"
-                            android:textSize="14sp"
-                            tools:text="65.2 kg" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Thay đổi"
-                            android:textColor="@color/colorSecondaryText"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/textWeightChange"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textColor="@color/successColor"
-                            android:textSize="14sp"
-                            tools:text="↓ 0.3 kg" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Biểu đồ cân nặng"
+                android:textColor="@color/colorSecondaryText" />
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Blood Pressure Statistics -->
+        <!-- Water Chart -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/cardBackground"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp">
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/colorSurface"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Biểu đồ nước uống"
+                android:textColor="@color/colorSecondaryText" />
+        </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Thống kê huyết áp"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+        <!-- Steps Chart -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/colorSurface"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
 
-                <!-- Sử dụng View thay thế tạm thời -->
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/bloodPressureChartPlaceholder"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_chart_placeholder"
-                    android:contentDescription="Biểu đồ huyết áp"
-                    tools:ignore="MissingClass" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Huyết áp TB"
-                            android:textColor="@color/colorSecondaryText"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/textAvgBloodPressure"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textColor="@color/colorPrimaryText"
-                            android:textSize="14sp"
-                            tools:text="118/76" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Trạng thái"
-                            android:textColor="@color/colorSecondaryText"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:id="@+id/textBloodPressureStatus"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textColor="@color/successColor"
-                            android:textSize="14sp"
-                            tools:text="Bình thường" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Biểu đồ bước chân"
+                android:textColor="@color/colorSecondaryText" />
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</ScrollView>

@@ -15,7 +15,7 @@
         android:textColor="@color/colorPrimaryText"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp" />
 
     <!-- Ô nhập liệu -->
     <com.google.android.material.textfield.TextInputLayout
@@ -23,7 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nhập số bước"
-        app:boxCornerRadius="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -32,7 +35,7 @@
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:maxLines="1"
-            android:imeOptions="actionDone"/>
+            android:imeOptions="actionDone" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Nút -->
@@ -49,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="HỦY"
-            android:textColor="@color/colorSecondaryText"/>
+            android:textColor="@color/colorSecondaryText" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
@@ -58,6 +61,6 @@
             android:layout_marginStart="8dp"
             android:text="LƯU"
             app:backgroundTint="@color/colorPrimary"
-            app:cornerRadius="8dp"/>
+            app:cornerRadius="8dp" />
     </LinearLayout>
 </LinearLayout>
