@@ -30,7 +30,7 @@
                 android:layout_height="19dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_calendar"
-                android:tint="@color/colorPrimary" />
+                app:tint="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/textDate"

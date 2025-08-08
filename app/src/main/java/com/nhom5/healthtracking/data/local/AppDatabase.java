@@ -15,7 +15,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     
     private static volatile AppDatabase INSTANCE;
-    private static final String DATABASE_NAME = "health_tracking_database";
+    private static final String DATABASE_NAME = "health_records.db";
     
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {

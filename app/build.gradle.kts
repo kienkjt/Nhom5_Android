@@ -62,4 +62,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation(libs.mpandroidchart)
+    implementation(libs.circleimageview)
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 }

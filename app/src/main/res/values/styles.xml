@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- Base application theme -->
     <style name="Theme.HealthTracker" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -7,22 +8,22 @@
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorOnSecondary">@color/colorOnPrimary</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <!-- Text styles -->
-    <style name="TextAppearance.HealthTracker" parent="TextAppearance.Material3.BodyLarge">
+
+    <!-- Base text appearance -->
+    <style name="TextAppearance.HealthTracker" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/colorPrimaryText</item>
     </style>
 
-    <style name="TextAppearance.HealthTracker.Title" parent="TextAppearance.Material3.HeadlineSmall">
+    <style name="TextAppearance.HealthTracker.Title" parent="TextAppearance.HealthTracker">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/colorPrimaryText</item>
     </style>
 
-    <style name="TextAppearance.HealthTracker.Subtitle" parent="TextAppearance.Material3.BodyMedium">
+    <style name="TextAppearance.HealthTracker.Subtitle" parent="TextAppearance.HealthTracker">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/colorSecondaryText</item>
     </style>
@@ -54,12 +55,16 @@
         <item name="boxCornerRadiusBottomEnd">8dp</item>
         <item name="boxCornerRadiusBottomStart">8dp</item>
     </style>
+
+    <!-- Shape appearances -->
     <style name="ShapeAppearance.MediumComponent" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
     </style>
+
     <style name="ShapeAppearance.CircleComponent" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
 </resources>
