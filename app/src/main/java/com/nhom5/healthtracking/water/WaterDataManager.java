@@ -10,6 +10,8 @@ public class WaterDataManager {
     private static final String GOAL_WATER_KEY = "goalWater";
     private static final String WEEKLY_WATER_KEY_PREFIX = "weeklyWater_";
     private static final String LAST_INPUT_WATER_KEY = "lastInputWater";
+    private static final String LAST_DAY_KEY = "lastDay";
+    private static final String LAST_YEAR_KEY = "lastYear";
 
     public static void saveTotalWater(Context context, int value) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -58,5 +60,25 @@ public class WaterDataManager {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(LAST_INPUT_WATER_KEY, "");
     }
-}
 
+    // Thêm phần lưu và đọc ngày/năm
+    public static int getLastDay(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(LAST_DAY_KEY, -1);
+    }
+
+    public static int getLastYear(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(LAST_YEAR_KEY, -1);
+    }
+
+    public static void saveLastDay(Context context, int day) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putInt(LAST_DAY_KEY, day).apply();
+    }
+
+    public static void saveLastYear(Context context, int year) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putInt(LAST_YEAR_KEY, year).apply();
+    }
+}

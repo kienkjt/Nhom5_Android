@@ -14,14 +14,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.myhealth.WaterDataManager;
+import com.nhom5.healthtracking.water.WaterDataManager;
 import com.nhom5.healthtracking.R;
 
 import java.util.Calendar;
 
 public class water_Monitoring extends AppCompatActivity {
 
-    TextView tvnhatky, tvmuctieu, tvProgressCircle,  edtGoalWater;
+    TextView tvnhatky, tvmuctieu, tvProgressCircle, edtGoalWater;
     EditText edtTodayWater;
     ProgressBar pbwater;
 
@@ -51,14 +51,11 @@ public class water_Monitoring extends AppCompatActivity {
 
         pbwater.setMax(100);
 
-        // Load dữ liệu đã lưu
-        totalWater = WaterDataManager.getTotalWater(this);
-        goalWater = WaterDataManager.getGoalWater(this);
-        weeklyWater = WaterDataManager.getWeeklyWater(this);
-        String lastInput = WaterDataManager.getLastInputWater(this);
+        // Kiểm tra ngày mới và load dữ liệu
+        checkNewDayAndLoadData();
 
         edtGoalWater.setText(String.valueOf(goalWater));
-        edtTodayWater.setText(lastInput);
+        edtTodayWater.setText(WaterDataManager.getLastInputWater(this));
 
         updateProgress();
 
@@ -67,6 +64,30 @@ public class water_Monitoring extends AppCompatActivity {
             intent.putExtra("weeklyWater", weeklyWater);
             startActivity(intent);
         });
+    }
+
+    private void checkNewDayAndLoadData() {
+        Calendar today = Calendar.getInstance();
+        int dayOfYear = today.get(Calendar.DAY_OF_YEAR);
+        int year = today.get(Calendar.YEAR);
+
+        int savedDay = WaterDataManager.getLastDay(this);
+        int savedYear = WaterDataManager.getLastYear(this);
+
+        goalWater = WaterDataManager.getGoalWater(this);
+        weeklyWater = WaterDataManager.getWeeklyWater(this);
+
+        if (savedDay != dayOfYear || savedYear != year) {
+            // Sang ngày mới -> reset totalWater
+            totalWater = 0;
+
+            // Lưu ngày hiện tại
+            WaterDataManager.saveLastDay(this, dayOfYear);
+            WaterDataManager.saveLastYear(this, year);
+            WaterDataManager.saveTotalWater(this, totalWater);
+        } else {
+            totalWater = WaterDataManager.getTotalWater(this);
+        }
     }
 
     private void updateGoalFromInput() {
