@@ -71,6 +71,39 @@ public class UserRepository {
                             });
                 });
     }
+    /**
+     * Flow:
+     * - Đăng nhập bằng email và password bằng Firebase Auth
+     * - Đăng nhập thành công -> lấy dữ liệu user từ Firestore
+     * - Nếu Firestore có dữ liệu user -> cập nhật dữ liệu user vào Room database (upsert)
+     * - Nếu Firestore không có dữ liệu user -> throw exception
+     */
+    public Task<Void> login(String email, String password) {
+        return auth.signInWithEmailAndPassword(email, password)
+                .continueWithTask(t -> {
+                    if (!t.isSuccessful()) return Tasks.forException(t.getException());
+                    FirebaseUser fu = t.getResult().getUser();
+                    if (fu == null) return Tasks.forException(new IllegalStateException("No FirebaseUser"));
+                    final String uid = fu.getUid();
+                    DocumentReference docRef = fs.collection("users").document(uid);
+
+                    return docRef.get().continueWithTask(docTask -> {
+                        if (!docTask.isSuccessful())
+                            return Tasks.forException(new IllegalStateException("Firestore fetch user failed. Please try again later."));
+
+                        DocumentSnapshot doc = docTask.getResult();
+                        if(doc == null || !doc.exists())
+                            return Tasks.forException(new IllegalStateException("User not found in Firestore. Please contact administrator."));
+
+                        User ue = mapDocToUser(uid, doc);
+                        ue.isSynced = true;
+                        IO.execute(() -> userDao.upsert(ue));
+
+                        // create session here
+                        return Tasks.forResult(null);
+                    });
+                });
+    }
 
     private static User mapFirebaseAuthUser(FirebaseUser fu) {
         Date now = new Date();

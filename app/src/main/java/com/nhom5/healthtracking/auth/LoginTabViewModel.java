@@ -39,9 +39,7 @@ public class LoginTabViewModel extends AndroidViewModel {
         this.sessionManager = SessionManager.getInstance(application);
     }
 
-    // Login user
     public void loginUser(String email, String password) {
-        // Validate inputs
         String validationError = validateInputs(email, password);
         if (validationError != null) {
             errorMessage.setValue(validationError);
@@ -49,9 +47,16 @@ public class LoginTabViewModel extends AndroidViewModel {
         }
 
         isLoading.setValue(true);
-        
-        // Execute login in background thread
-        new LoginUserTask().execute(email, password);
+
+        userRepository.login(email, password)
+            .addOnCompleteListener(task -> {
+                isLoading.setValue(false);
+                if (task.isSuccessful()) {
+                    loginSuccess.setValue(true);
+                } else {
+                    errorMessage.setValue(task.getException().getMessage());
+                }
+            });
     }
 
     private String validateInputs(String email, String password) {
@@ -70,54 +75,10 @@ public class LoginTabViewModel extends AndroidViewModel {
         return null; // No validation errors
     }
 
-    // AsyncTask for authentication
-    private class LoginUserTask extends AsyncTask<String, Void, User> {
-        private String errorMsg = null;
-
-        @Override
-        protected User doInBackground(String... params) {
-            try {
-                String email = params[0];
-                String password = params[1];
-                
-                // Authenticate user
-                User user = userRepository.authenticate(email, password);
-                
-                if (user == null) {
-                    errorMsg = "Invalid email or password";
-                }
-                
-                return user;
-            } catch (Exception e) {
-                errorMsg = "Login failed: " + e.getMessage();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(User user) {
-            isLoading.setValue(false);
-            
-            if (user != null) {
-                // Save user session securely
-                sessionManager.saveUserSession(user);
-                
-                loggedInUser.setValue(user);
-                loginSuccess.setValue(true);
-                errorMessage.setValue(null);
-            } else {
-                errorMessage.setValue(errorMsg);
-                loginSuccess.setValue(false);
-            }
-        }
-    }
-
-    // Check if user is already logged in
     public boolean isUserLoggedIn() {
         return sessionManager.isUserLoggedIn() && sessionManager.isSessionValid();
     }
 
-    // Get logged in user info from secure session
     public User getLoggedInUserFromPrefs() {
         if (!isUserLoggedIn()) {
             return null;
@@ -125,7 +86,6 @@ public class LoginTabViewModel extends AndroidViewModel {
         return sessionManager.getLoggedInUser();
     }
 
-    // Logout user
     public void logoutUser() {
         sessionManager.clearSession();
         
@@ -133,22 +93,18 @@ public class LoginTabViewModel extends AndroidViewModel {
         loginSuccess.setValue(false);
     }
 
-    // Check if session is valid and refresh if needed
     public boolean isSessionValid() {
         return sessionManager.isSessionValid();
     }
 
-    // Update session timestamp
     public void refreshSession() {
         sessionManager.updateSessionTime();
     }
 
-    // Get session token
     public String getSessionToken() {
         return sessionManager.getSessionToken();
     }
 
-    // Getters for LiveData
     public MutableLiveData<Boolean> getIsLoading() {
         return isLoading;
     }
@@ -165,12 +121,10 @@ public class LoginTabViewModel extends AndroidViewModel {
         return loggedInUser;
     }
 
-    // Clear error message
     public void clearError() {
         errorMessage.setValue(null);
     }
 
-    // Factory class for creating LoginTabViewModel with dependencies
     public static class Factory extends ViewModelProvider.AndroidViewModelFactory {
         private final Application application;
         private UserRepository userRepository;
