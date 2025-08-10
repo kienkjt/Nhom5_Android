@@ -46,7 +46,7 @@ public class UserRepository {
      * - Lưu vào Firestore
      */
 
-    public Task<Void> register(String email, String password) {
+    public Task<User> register(String email, String password) {
         return auth.createUserWithEmailAndPassword(email, password)
                 .continueWithTask(t -> {
                     if (!t.isSuccessful())
@@ -63,12 +63,13 @@ public class UserRepository {
                     });
 
                     DocumentReference docRef = fs.collection("users").document(uid);
-                    return docRef.set(toCreateMapWithServerTimestamps(ue), SetOptions.merge())
+                    docRef.set(toCreateMapWithServerTimestamps(ue), SetOptions.merge())
                             .addOnSuccessListener(v -> {
                                 ue.isSynced = true;
                                 ue.updatedAt = new Date();
                                 IO.execute(() -> userDao.upsert(ue));
                             });
+                    return Tasks.forResult(ue);
                 });
     }
     /**
@@ -78,7 +79,7 @@ public class UserRepository {
      * - Nếu Firestore có dữ liệu user -> cập nhật dữ liệu user vào Room database (upsert)
      * - Nếu Firestore không có dữ liệu user -> throw exception
      */
-    public Task<Void> login(String email, String password) {
+    public Task<User> login(String email, String password) {
         return auth.signInWithEmailAndPassword(email, password)
                 .continueWithTask(t -> {
                     if (!t.isSuccessful()) return Tasks.forException(t.getException());
@@ -99,8 +100,7 @@ public class UserRepository {
                         ue.isSynced = true;
                         IO.execute(() -> userDao.upsert(ue));
 
-                        // create session here
-                        return Tasks.forResult(null);
+                        return Tasks.forResult(ue);
                     });
                 });
     }

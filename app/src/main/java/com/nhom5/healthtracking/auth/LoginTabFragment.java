@@ -68,7 +68,7 @@ public class LoginTabFragment extends Fragment {
 
     void observeViewModel() {
         // Observe loading state
-        mViewModel.getIsLoading().observe(this, isLoading -> {
+        mViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (isLoading != null) {
                 loginButton.setEnabled(!isLoading);
                 loginButton.setText(isLoading ? "Logging in..." : "Login");
@@ -76,7 +76,7 @@ public class LoginTabFragment extends Fragment {
         });
 
         // Observe error messages
-        mViewModel.getErrorMessage().observe(this, errorMessage -> {
+        mViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
                 mViewModel.clearError(); // Clear error after showing
@@ -84,7 +84,7 @@ public class LoginTabFragment extends Fragment {
         });
 
         // Observe login success
-        mViewModel.getLoginSuccess().observe(this, success -> {
+        mViewModel.getLoginSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success != null && success) {
                 Toast.makeText(getContext(), "Login successful!", Toast.LENGTH_SHORT).show();
                 navigateToMainActivity();
@@ -92,7 +92,7 @@ public class LoginTabFragment extends Fragment {
         });
 
         // Observe logged in user
-        mViewModel.getLoggedInUser().observe(this, user -> {
+        mViewModel.getLoggedInUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
                 String welcomeMessage = "Welcome " + (user.name != null && !user.name.isEmpty() ? user.name : user.email) + "!";
                 Toast.makeText(getContext(), welcomeMessage, Toast.LENGTH_SHORT).show();

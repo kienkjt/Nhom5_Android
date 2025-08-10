@@ -46,4 +46,29 @@ public class User {
                 ", dateOfBirth='" + dateOfBirth + '\'' +
                 '}';
     }
+
+    @NonNull
+    public String getUid() {
+        return uid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Long getHeight() {
+        return height;
+    }
 }

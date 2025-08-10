@@ -1,5 +1,6 @@
 package com.nhom5.healthtracking.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.nhom5.healthtracking.MainActivity;
 import com.nhom5.healthtracking.R;
 
 public class RegisterTabFragment extends Fragment {
@@ -79,8 +81,7 @@ public class RegisterTabFragment extends Fragment {
             if (success != null && success) {
                 Toast.makeText(getContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
                 clearForm();
-                // Navigate to login tab or main activity
-                // You can add navigation logic here
+                navigateToMainActivity();
             }
         });
     }
@@ -123,6 +124,17 @@ public class RegisterTabFragment extends Fragment {
                     .setStartDelay(delay)
                     .start();
             delay += 100;
+        }
+    }
+
+    void navigateToMainActivity() {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        
+        // Finish the auth activity
+        if (getActivity() != null) {
+            getActivity().finish();
         }
     }
 }

@@ -49,14 +49,16 @@ public class LoginTabViewModel extends AndroidViewModel {
         isLoading.setValue(true);
 
         userRepository.login(email, password)
-            .addOnCompleteListener(task -> {
-                isLoading.setValue(false);
-                if (task.isSuccessful()) {
+                .addOnSuccessListener(user -> {
+                    isLoading.setValue(false);
                     loginSuccess.setValue(true);
-                } else {
-                    errorMessage.setValue(task.getException().getMessage());
-                }
-            });
+                    errorMessage.setValue(null);
+                    sessionManager.saveUserSession(user);
+                })
+                .addOnFailureListener(e -> {
+                    isLoading.setValue(false);
+                    errorMessage.setValue(e.getMessage());
+                });
     }
 
     private String validateInputs(String email, String password) {

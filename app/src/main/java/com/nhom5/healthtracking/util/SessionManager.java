@@ -90,7 +90,7 @@ public class SessionManager {
         user.name = encryptedSharedPreferences.getString(KEY_USER_NAME, "");
         
         // Additional validation: ensure we have essential user data
-        if (user.uid == null || user.uid.isEmpty() || user.email == null || user.email.isEmpty()) {
+        if (user.uid.isEmpty() || user.email.isEmpty()) {
             // Invalid user data, clear session
             clearSession();
             return null;

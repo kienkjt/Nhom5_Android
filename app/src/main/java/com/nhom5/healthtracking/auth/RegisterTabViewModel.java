@@ -10,10 +10,11 @@ import androidx.lifecycle.ViewModelProvider;
 import com.nhom5.healthtracking.data.local.AppDatabase;
 import com.nhom5.healthtracking.data.repository.UserRepository;
 import com.nhom5.healthtracking.constant.AuthConstant;
+import com.nhom5.healthtracking.util.SessionManager;
 
 public class RegisterTabViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
-    
+    private final SessionManager sessionManager;
     // LiveData for UI updates
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private MutableLiveData<String> errorMessage = new MutableLiveData<>();
@@ -23,11 +24,13 @@ public class RegisterTabViewModel extends AndroidViewModel {
         super(application);
         AppDatabase database = AppDatabase.getDatabase(application);
         this.userRepository = new UserRepository(database.userDao());
+        this.sessionManager = SessionManager.getInstance(application);
     }
 
     public RegisterTabViewModel(Application application, UserRepository userRepository) {
         super(application);
         this.userRepository = userRepository;
+        this.sessionManager = SessionManager.getInstance(application);
     }
 
     // Register new user
@@ -43,14 +46,15 @@ public class RegisterTabViewModel extends AndroidViewModel {
         
         // Use Firebase Auth for registration through UserRepository
         userRepository.register(email, password)
-            .addOnCompleteListener(authResult -> {
+            .addOnSuccessListener(user -> {
                 isLoading.setValue(false);
-                if (authResult.isSuccessful()) {
-                    registrationSuccess.setValue(true);
-                    errorMessage.setValue(null);
-                } else {
-                    errorMessage.setValue(authResult.getException().getMessage());
-                }
+                registrationSuccess.setValue(true);
+                errorMessage.setValue(null);
+                sessionManager.saveUserSession(user);
+            })
+            .addOnFailureListener(e -> {
+                isLoading.setValue(false);
+                errorMessage.setValue(e.getMessage());
             });
     }
 
