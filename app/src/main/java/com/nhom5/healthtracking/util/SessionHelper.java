@@ -52,9 +52,9 @@ public class SessionHelper {
     /**
      * Get current user's ID if available
      */
-    public int getCurrentUserId() {
+    public String getCurrentUserUid() {
         User user = getCurrentUser();
-        return user != null ? user.id : 0;
+        return user != null ? user.uid : null;
     }
     
     /**

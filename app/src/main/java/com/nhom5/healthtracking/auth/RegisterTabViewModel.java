@@ -1,7 +1,6 @@
 package com.nhom5.healthtracking.auth;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.util.Patterns;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,9 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.nhom5.healthtracking.data.local.AppDatabase;
-import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.data.repository.UserRepository;
-import com.nhom5.healthtracking.util.HashUtils;
 import com.nhom5.healthtracking.constant.AuthConstant;
 
 public class RegisterTabViewModel extends AndroidViewModel {
@@ -44,8 +41,17 @@ public class RegisterTabViewModel extends AndroidViewModel {
 
         isLoading.setValue(true);
         
-        // Execute registration in background thread
-        new RegisterUserTask().execute(email, password);
+        // Use Firebase Auth for registration through UserRepository
+        userRepository.register(email, password)
+            .addOnCompleteListener(authResult -> {
+                isLoading.setValue(false);
+                if (authResult.isSuccessful()) {
+                    registrationSuccess.setValue(true);
+                    errorMessage.setValue(null);
+                } else {
+                    errorMessage.setValue(authResult.getException().getMessage());
+                }
+            });
     }
 
     private String validateInputs(String email, String password, String confirmPassword, boolean acceptedTerms) {
@@ -76,43 +82,7 @@ public class RegisterTabViewModel extends AndroidViewModel {
         return null; // No validation errors
     }
 
-    // AsyncTask for database operations
-    private class RegisterUserTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                String email = params[0];
-                String password = params[1];
-                
-                // Check if email already exists
-                if (userRepository.checkEmailExists(email)) {
-                    return "Email already registered";
-                }
-                
-                // Create and insert new user
-                String hashedPassword = HashUtils.hash(password);
-                User newUser = new User(email, hashedPassword);
-                userRepository.insert(newUser);
-                
-                return "SUCCESS";
-            } catch (Exception e) {
-                return "Registration failed: " + e.getMessage();
-            }
-        }
 
-        @Override
-        protected void onPostExecute(String result) {
-            isLoading.setValue(false);
-            
-            if ("SUCCESS".equals(result)) {
-                registrationSuccess.setValue(true);
-                errorMessage.setValue(null);
-            } else {
-                errorMessage.setValue(result);
-                registrationSuccess.setValue(false);
-            }
-        }
-    }
 
     // Getters for LiveData
     public MutableLiveData<Boolean> getIsLoading() {

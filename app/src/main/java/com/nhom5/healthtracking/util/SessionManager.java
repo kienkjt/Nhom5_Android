@@ -10,13 +10,13 @@ import java.security.GeneralSecurityException;
 
 public class SessionManager {
     private static final String SHARED_PREF_NAME = "health_tracking_secure_session";
-    private static final String KEY_USER_ID = "user_id";
+    private static final String KEY_USER_UID = "user_uid";
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_SESSION_TOKEN = "session_token";
     private static final String KEY_LOGIN_TIME = "login_time";
 
-    private SharedPreferences encryptedSharedPreferences;
+    private final SharedPreferences encryptedSharedPreferences;
     private static SessionManager instance;
 
     private SessionManager(Context context) throws GeneralSecurityException, IOException {
@@ -49,7 +49,7 @@ public class SessionManager {
      */
     public void saveUserSession(User user) {
         SharedPreferences.Editor editor = encryptedSharedPreferences.edit();
-        editor.putInt(KEY_USER_ID, user.id);
+        editor.putString(KEY_USER_UID, user.uid);
         editor.putString(KEY_USER_EMAIL, user.email);
         editor.putString(KEY_USER_NAME, user.name != null ? user.name : "");
         editor.putLong(KEY_LOGIN_TIME, System.currentTimeMillis());
@@ -85,12 +85,12 @@ public class SessionManager {
         }
 
         User user = new User();
-        user.id = encryptedSharedPreferences.getInt(KEY_USER_ID, 0);
+        user.uid = encryptedSharedPreferences.getString(KEY_USER_UID, "");
         user.email = encryptedSharedPreferences.getString(KEY_USER_EMAIL, "");
         user.name = encryptedSharedPreferences.getString(KEY_USER_NAME, "");
         
         // Additional validation: ensure we have essential user data
-        if (user.id == 0 || user.email == null || user.email.isEmpty()) {
+        if (user.uid == null || user.uid.isEmpty() || user.email == null || user.email.isEmpty()) {
             // Invalid user data, clear session
             clearSession();
             return null;
@@ -148,9 +148,6 @@ public class SessionManager {
         return notExpired;
     }
 
-    /**
-     * Update session timestamp (only if valid token exists)
-     */
     public void updateSessionTime() {
         if (isUserLoggedIn() && isSessionValid()) {
             SharedPreferences.Editor editor = encryptedSharedPreferences.edit();
@@ -168,12 +165,9 @@ public class SessionManager {
         editor.apply();
     }
 
-    /**
-     * Generate a session token
-     */
     private String generateSessionToken(User user) {
         long timestamp = System.currentTimeMillis();
-        String tokenData = user.id + ":" + user.email + ":" + timestamp;
+        String tokenData = user.uid + ":" + user.email + ":" + timestamp;
         try {
             return HashUtils.hash(tokenData);
         } catch (Exception e) {
@@ -182,9 +176,6 @@ public class SessionManager {
         }
     }
 
-    /**
-     * Validate if token format is correct and not empty
-     */
     private boolean isValidToken(String token) {
         if (token == null || token.isEmpty()) {
             return false;
@@ -196,7 +187,6 @@ public class SessionManager {
             return true; // BCrypt hash format
         }
         
-        // Check if it's a valid integer (fallback hash)
         try {
             Integer.parseInt(token);
             return true;
@@ -205,9 +195,6 @@ public class SessionManager {
         }
     }
 
-    /**
-     * Verify if current token belongs to current user data
-     */
     public boolean verifyCurrentToken() {
         if (!isUserLoggedIn()) {
             return false;
@@ -222,7 +209,7 @@ public class SessionManager {
         }
         
         // Regenerate token with current user data and login time to verify
-        String expectedTokenData = currentUser.id + ":" + currentUser.email + ":" + loginTime;
+        String expectedTokenData = currentUser.uid + ":" + currentUser.email + ":" + loginTime;
         
         try {
             // For BCrypt hash, we can't reverse it, so we assume it's valid if format is correct
@@ -238,42 +225,26 @@ public class SessionManager {
         }
     }
 
-    /**
-     * Get user ID from session
-     */
-    public int getUserId() {
-        return encryptedSharedPreferences.getInt(KEY_USER_ID, 0);
+    public String getUserUid() {
+        return encryptedSharedPreferences.getString(KEY_USER_UID, "");
     }
 
-    /**
-     * Get user email from session
-     */
     public String getUserEmail() {
         return encryptedSharedPreferences.getString(KEY_USER_EMAIL, "");
     }
 
-    /**
-     * Get user name from session
-     */
     public String getUserName() {
         return encryptedSharedPreferences.getString(KEY_USER_NAME, "");
     }
 
-    /**
-     * Check if any session data exists (even if invalid)
-     */
     public boolean hasSessionData() {
         String token = encryptedSharedPreferences.getString(KEY_SESSION_TOKEN, null);
-        int userId = encryptedSharedPreferences.getInt(KEY_USER_ID, 0);
+        String userUid = encryptedSharedPreferences.getString(KEY_USER_UID, "");
         String userEmail = encryptedSharedPreferences.getString(KEY_USER_EMAIL, "");
         
-        return token != null || userId != 0 || !userEmail.isEmpty();
+        return token != null || !userUid.isEmpty() || !userEmail.isEmpty();
     }
 
-    /**
-     * Validate session integrity
-     * Checks if all required session data exists and is consistent
-     */
     public boolean validateSessionIntegrity() {
         String token = getSessionToken();
         User user = getLoggedInUser();
@@ -283,23 +254,17 @@ public class SessionManager {
             return false;
         }
         
-        // Check if token format is valid
         if (!isValidToken(token)) {
             return false;
         }
         
-        // Check if user data is complete
-        if (user.id == 0 || user.email == null || user.email.isEmpty()) {
+        if (user.uid == null || user.uid.isEmpty() || user.email == null || user.email.isEmpty()) {
             return false;
         }
         
         return true;
     }
 
-    /**
-     * Clean up invalid session data
-     * Removes session if it exists but is invalid
-     */
     public void cleanupInvalidSession() {
         if (hasSessionData() && !validateSessionIntegrity()) {
             clearSession();

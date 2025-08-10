@@ -1,9 +1,10 @@
 package com.nhom5.healthtracking.data.local.dao;
 
-import androidx.room.Dao;
+import androidx.lifecycle.LiveData;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
+import androidx.room.Dao;
 import androidx.room.Query;
-import androidx.room.Update;
 import androidx.room.Delete;
 
 import java.util.List;
@@ -12,21 +13,16 @@ import com.nhom5.healthtracking.data.local.entity.User;
 
 @Dao
 public interface UserDao {
-    @Query("SELECT * FROM user")
-    List<User> getAllUsers();
 
-    @Insert
-    void insertUser(User user);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void upsert(User user);
 
-    @Update
-    void updateUser(User user);
+    @Query("SELECT * FROM users")
+    List<User> getAll();
 
     @Delete
-    void deleteUser(User user);
+    void delete(User user);
 
-    @Query("SELECT * FROM user WHERE id = :id")
-    User getUserById(int id);
-
-    @Query("SELECT * FROM user WHERE email = :email")
-    User getUserByEmail(String email);
+    @Query("SELECT * FROM users WHERE uid = :uid")
+    LiveData<User> observeByUid(String uid);
 }

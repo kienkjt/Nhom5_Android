@@ -4,11 +4,13 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 import com.nhom5.healthtracking.data.local.dao.UserDao;
 import com.nhom5.healthtracking.data.local.entity.User;
 
 @Database(entities = {User.class}, version = 1, exportSchema = false)
+@TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     
@@ -23,7 +25,8 @@ public abstract class AppDatabase extends RoomDatabase {
                             context.getApplicationContext(),
                             AppDatabase.class,
                             DATABASE_NAME
-                    ).allowMainThreadQueries() // For development only, use background threads in production
+                    )
+                    .fallbackToDestructiveMigration()
                     .build();
                 }
             }

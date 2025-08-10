@@ -1,16 +1,16 @@
 package com.nhom5.healthtracking.data.local.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ColumnInfo;
 import androidx.room.PrimaryKey;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
-@Entity(tableName = "user")
+@Entity(tableName = "users")
 public class User {
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+    @PrimaryKey
+    @NonNull
+    public String uid; // Firebase UID
     
     @ColumnInfo(name = "name")
     public String name;
@@ -24,55 +24,22 @@ public class User {
     @ColumnInfo(name = "email")
     public String email;
 
-    @ColumnInfo(name = "password")
-    public String password;
+    @ColumnInfo(name = "height")
+    public Long height;
 
     @ColumnInfo(name = "created_at")
-    public String createdAt;
+    public Date createdAt;
 
     @ColumnInfo(name = "updated_at")
-    public String updatedAt;
-    
-    // Default constructor
-    public User() {
-        this.createdAt = getCurrentTimestamp();
-        this.updatedAt = getCurrentTimestamp();
-    }
-    
-    // Constructor with basic info for register
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-        this.createdAt = getCurrentTimestamp();
-        this.updatedAt = getCurrentTimestamp();
-    }
-    
-    // Constructor with all fields except timestamps
-    public User(String name, String dateOfBirth, String gender, String email, String password) {
-        this.name = name;
-        this.dateOfBirth = dateOfBirth;
-        this.gender = gender;
-        this.email = email;
-        this.password = password;
-        this.createdAt = getCurrentTimestamp();
-        this.updatedAt = getCurrentTimestamp();
-    }
-    
-    // Utility method to get current timestamp
-    private String getCurrentTimestamp() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        return sdf.format(new Date());
-    }
-    
-    // Update timestamp when updating user
-    public void updateTimestamp() {
-        this.updatedAt = getCurrentTimestamp();
-    }
-    
+    public Date updatedAt;
+
+    @ColumnInfo(name = "is_synced")
+    public boolean isSynced;
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "uid=" + uid +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", gender='" + gender + '\'' +
