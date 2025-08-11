@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "id TEXT PRIMARY KEY," +
                 "user_id TEXT," +
                 "weight REAL," +
-                "recorded_date TEXT," +
+                "recorded_at TEXT," +
                 "notes TEXT," +
                 "created_at TEXT," +
                 "updated_at TEXT," +
@@ -45,14 +45,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addWeight(String userId, float weight, String notes) {
+    public void addWeight(String userId, double weight, String notes) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         values.put("id", UUID.randomUUID().toString());
         values.put("user_id", userId);
         values.put("weight", weight);
-        values.put("recorded_date", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
+        values.put("recorded_at", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
         values.put("notes", notes);
         values.put("created_at", now);
         values.put("updated_at", now);
@@ -64,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<WeightRecord> getAllWeights(String userId) {
         List<WeightRecord> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_WEIGHT, null, "user_id=?", new String[]{userId}, null, null, "recorded_date DESC");
+        Cursor cursor = db.query(TABLE_WEIGHT, null, "user_id=?", new String[]{userId}, null, null, "recorded_at DESC");
 
         if (cursor.moveToFirst()) {
             do {
@@ -72,7 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndexOrThrow("id")),
                         cursor.getString(cursor.getColumnIndexOrThrow("user_id")),
                         cursor.getFloat(cursor.getColumnIndexOrThrow("weight")),
-                        new Date(), // You can parse recorded_date here
+                        new Date(), // You can parse recorded_at here
                         cursor.getString(cursor.getColumnIndexOrThrow("notes"))
                 ));
             } while (cursor.moveToNext());

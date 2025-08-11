@@ -64,7 +64,7 @@ public class WeightTrackerActivity extends AppCompatActivity {
         btnAddWeight.setOnClickListener(v -> {
             String weightStr = etWeight.getText().toString().trim();
             if (!weightStr.isEmpty()) {
-                float weight = Float.parseFloat(weightStr);
+                double weight = Double.parseDouble(weightStr);
                 dbHelper.addWeight(currentUserId, weight, "");
                 etWeight.setText("");
                 loadWeightData();
@@ -80,11 +80,11 @@ public class WeightTrackerActivity extends AppCompatActivity {
 
         // Hiển thị cân nặng hiện tại & thay đổi so với trước
         if (!records.isEmpty()) {
-            float currentWeight = records.get(0).getWeight();
+            double currentWeight = records.get(0).getWeight();
             tvCurrentWeight.setText(currentWeight + " kg");
 
             if (records.size() > 1) {
-                float diff = currentWeight - records.get(1).getWeight();
+                double diff = currentWeight - records.get(1).getWeight();
                 if (diff > 0) {
                     tvWeightChange.setText("↑ " + Math.abs(diff) + " kg so với tháng trước");
                     tvWeightChange.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
@@ -106,7 +106,8 @@ public class WeightTrackerActivity extends AppCompatActivity {
         // Cập nhật biểu đồ
         List<Entry> entries = new ArrayList<>();
         for (int i = 0; i < records.size(); i++) {
-            entries.add(new Entry(i, records.get(i).getWeight()));
+            float weight = (float) records.get(i).getWeight();
+            entries.add(new Entry(i, weight));
         }
         LineDataSet dataSet = new LineDataSet(entries, "Cân nặng (kg)");
         dataSet.setCircleRadius(4f);
@@ -115,8 +116,8 @@ public class WeightTrackerActivity extends AppCompatActivity {
         chartWeight.invalidate();
     }
 
-    private void calculateBMI(float weight, float heightMeters) {
-        float bmi = weight / (heightMeters * heightMeters);
+    private void calculateBMI(double weight, float heightMeters) {
+        double bmi = weight / (heightMeters * heightMeters);
         tvBMI.setText(String.format("%.1f", bmi));
 
         String category;
@@ -148,7 +149,7 @@ public class WeightTrackerActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull WeightViewHolder holder, int position) {
             WeightRecord record = weightList.get(position);
             holder.tvWeight.setText(record.getWeight() + " kg");
-            holder.tvDate.setText(record.getRecordedDate().toString());
+            holder.tvDate.setText(record.getRecordedAt().toString());
         }
 
         @Override

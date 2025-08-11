@@ -8,11 +8,14 @@ import androidx.room.TypeConverters;
 
 import com.nhom5.healthtracking.data.local.dao.UserDao;
 import com.nhom5.healthtracking.data.local.entity.User;
+import com.nhom5.healthtracking.data.local.dao.WeightRecordDao;
+import com.nhom5.healthtracking.data.local.entity.WeightRecord;
 
-@Database(entities = {User.class}, version = 1, exportSchema = false)
+@Database(entities = {User.class, WeightRecord.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
+    public abstract WeightRecordDao weightRecordDao();
     
     private static volatile AppDatabase INSTANCE;
     private static final String DATABASE_NAME = "health_records.db";
