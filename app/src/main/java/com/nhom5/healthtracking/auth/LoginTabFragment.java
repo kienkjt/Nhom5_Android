@@ -1,5 +1,6 @@
 package com.nhom5.healthtracking.auth;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +28,8 @@ public class LoginTabFragment extends Fragment {
     TextView forgotPasswordTextView;
     Button loginButton;
     LoginTabViewModel mViewModel;
+    AppCompatButton googleSignInButton;
+    LinearLayout orSeparator;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -55,19 +59,23 @@ public class LoginTabFragment extends Fragment {
         passwordEditText = root.findViewById(R.id.password_edit_text);
         loginButton = root.findViewById(R.id.login_button);
         forgotPasswordTextView = root.findViewById(R.id.forgot_password_text);
+        googleSignInButton = root.findViewById(R.id.google_sign_in_button);
+        orSeparator = root.findViewById(R.id.or_separator);
     }
 
     void setupClickListeners() {
         loginButton.setOnClickListener(v -> performLogin());
         
         forgotPasswordTextView.setOnClickListener(v -> {
-            // Handle forgot password - for now just show a message
             Toast.makeText(getContext(), "Forgot password functionality will be implemented soon", Toast.LENGTH_SHORT).show();
+        });
+
+        googleSignInButton.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Google Sign In coming soon!", Toast.LENGTH_SHORT).show();
         });
     }
 
     void observeViewModel() {
-        // Observe loading state
         mViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (isLoading != null) {
                 loginButton.setEnabled(!isLoading);
@@ -75,15 +83,13 @@ public class LoginTabFragment extends Fragment {
             }
         });
 
-        // Observe error messages
         mViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
-                mViewModel.clearError(); // Clear error after showing
+                mViewModel.clearError();
             }
         });
 
-        // Observe login success
         mViewModel.getLoginSuccess().observe(getViewLifecycleOwner(), success -> {
             if (success != null && success) {
                 Toast.makeText(getContext(), "Login successful!", Toast.LENGTH_SHORT).show();
@@ -91,7 +97,6 @@ public class LoginTabFragment extends Fragment {
             }
         });
 
-        // Observe logged in user
         mViewModel.getLoggedInUser().observe(getViewLifecycleOwner(), user -> {
             if (user != null) {
                 String welcomeMessage = "Welcome " + (user.name != null && !user.name.isEmpty() ? user.name : user.email) + "!";
@@ -101,7 +106,6 @@ public class LoginTabFragment extends Fragment {
     }
 
     void checkIfAlreadyLoggedIn() {
-        // Check if user is already logged in
         if (mViewModel.isUserLoggedIn()) {
             navigateToMainActivity();
         }
@@ -119,7 +123,6 @@ public class LoginTabFragment extends Fragment {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         
-        // Finish the auth activity
         if (getActivity() != null) {
             getActivity().finish();
         }
@@ -136,7 +139,9 @@ public class LoginTabFragment extends Fragment {
                 emailEditText,
                 passwordEditText,
                 forgotPasswordTextView,
-                loginButton
+                loginButton,
+                orSeparator,
+                googleSignInButton
         };
         for (View view : views) {
             view.setTranslationX(translationX);

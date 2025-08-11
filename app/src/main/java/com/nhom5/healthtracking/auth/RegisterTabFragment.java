@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -24,7 +26,8 @@ public class RegisterTabFragment extends Fragment {
     CheckBox termsCheckBox;
     Button registerButton;
     RegisterTabViewModel mViewModel;
-
+    AppCompatButton googleSignUpButton;
+    LinearLayout orSeparator;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
@@ -53,6 +56,8 @@ public class RegisterTabFragment extends Fragment {
         confirmPasswordEditText = root.findViewById(R.id.confirm_password_edit_text);
         termsCheckBox = root.findViewById(R.id.terms_checkbox);
         registerButton = root.findViewById(R.id.register_button);
+        googleSignUpButton = root.findViewById(R.id.google_sign_up_button);
+        orSeparator = root.findViewById(R.id.or_separator);
     }
 
     void setupClickListeners() {
@@ -109,7 +114,9 @@ public class RegisterTabFragment extends Fragment {
                 passwordEditText,
                 confirmPasswordEditText,
                 termsCheckBox,
-                registerButton
+                registerButton,
+                orSeparator,
+                googleSignUpButton
         };
         for (View view : views) {
             view.setTranslationX(translationX);
