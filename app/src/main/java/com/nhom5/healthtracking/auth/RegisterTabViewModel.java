@@ -2,12 +2,15 @@ package com.nhom5.healthtracking.auth;
 
 import android.app.Application;
 import android.util.Patterns;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.tasks.Task;
 import com.nhom5.healthtracking.data.local.AppDatabase;
+import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.data.repository.UserRepository;
 import com.nhom5.healthtracking.constant.AuthConstant;
 import com.nhom5.healthtracking.util.SessionManager;
@@ -27,66 +30,80 @@ public class RegisterTabViewModel extends AndroidViewModel {
         this.sessionManager = SessionManager.getInstance(application);
     }
 
-    public RegisterTabViewModel(Application application, UserRepository userRepository) {
-        super(application);
-        this.userRepository = userRepository;
-        this.sessionManager = SessionManager.getInstance(application);
-    }
-
-    // Register new user
     public void registerUser(String email, String password, String confirmPassword, boolean acceptedTerms) {
-        // Validate inputs
         String validationError = validateInputs(email, password, confirmPassword, acceptedTerms);
         if (validationError != null) {
-            errorMessage.setValue(validationError);
+            setErrorMessage(validationError);
             return;
         }
 
-        isLoading.setValue(true);
-        
-        // Use Firebase Auth for registration through UserRepository
-        userRepository.register(email, password)
-            .addOnSuccessListener(user -> {
-                isLoading.setValue(false);
-                registrationSuccess.setValue(true);
-                errorMessage.setValue(null);
-                sessionManager.saveUserSession(user);
-            })
-            .addOnFailureListener(e -> {
-                isLoading.setValue(false);
-                errorMessage.setValue(e.getMessage());
-            });
+        setLoading(true);
+        performRegistration(userRepository.register(email, password));
+    }
+
+
+    public void registerWithGoogle(String idToken) {
+        if (idToken == null || idToken.isEmpty()) {
+            setErrorMessage("Google sign-in failed: Invalid token");
+            return;
+        }
+
+        setLoading(true);
+        performRegistration(userRepository.registerWithGoogle(idToken));
+    }
+
+    private void performRegistration(Task<User> registerTask) {
+        registerTask.addOnSuccessListener(user -> {
+                    setLoading(false);
+                    setRegistrationSuccess(true);
+                    setErrorMessage(null);
+                    sessionManager.saveUserSession(user);
+                })
+                .addOnFailureListener(e -> {
+                    setLoading(false);
+                    setErrorMessage(e.getMessage());
+                });
     }
 
     private String validateInputs(String email, String password, String confirmPassword, boolean acceptedTerms) {
         if (email == null || email.trim().isEmpty()) {
             return "Email is required";
         }
-        
+
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             return "Please enter a valid email address";
         }
-        
+
         if (password == null || password.trim().isEmpty()) {
             return "Password is required";
         }
-        
+
         if (!password.matches(AuthConstant.PASSWORD_PATTERN)) {
             return "Password must be at least 8 characters and contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 special character, and no whitespace";
         }
-        
+
         if (!password.equals(confirmPassword)) {
             return "Passwords do not match";
         }
-        
+
         if (!acceptedTerms) {
             return "Please accept the Terms and Conditions";
         }
-        
+
         return null; // No validation errors
     }
 
+    public void setLoading(boolean value) {
+        isLoading.postValue(value);
+    }
 
+    public void setErrorMessage(String value) {
+        errorMessage.postValue(value);
+    }
+
+    public void setRegistrationSuccess(boolean value) {
+        registrationSuccess.postValue(value);
+    }
 
     // Getters for LiveData
     public MutableLiveData<Boolean> getIsLoading() {
@@ -103,36 +120,6 @@ public class RegisterTabViewModel extends AndroidViewModel {
 
     // Clear error message
     public void clearError() {
-        errorMessage.setValue(null);
-    }
-
-    // Factory class for creating RegisterTabViewModel with dependencies
-    public static class Factory extends ViewModelProvider.AndroidViewModelFactory {
-        private final Application application;
-        private UserRepository userRepository;
-
-        public Factory(@NonNull Application application) {
-            super(application);
-            this.application = application;
-        }
-
-        public Factory(@NonNull Application application, UserRepository userRepository) {
-            super(application);
-            this.application = application;
-            this.userRepository = userRepository;
-        }
-
-        @NonNull
-        @Override
-        public <T extends androidx.lifecycle.ViewModel> T create(@NonNull Class<T> modelClass) {
-            if (modelClass.isAssignableFrom(RegisterTabViewModel.class)) {
-                if (userRepository != null) {
-                    return (T) new RegisterTabViewModel(application, userRepository);
-                } else {
-                    return (T) new RegisterTabViewModel(application);
-                }
-            }
-            return super.create(modelClass);
-        }
+        setErrorMessage(null);
     }
 }

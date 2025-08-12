@@ -1,30 +1,26 @@
 package com.nhom5.healthtracking.auth;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.util.Patterns;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.tasks.Task;
 import com.nhom5.healthtracking.data.local.AppDatabase;
 import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.data.repository.UserRepository;
-import com.nhom5.healthtracking.constant.AuthConstant;
 import com.nhom5.healthtracking.util.SessionManager;
 
 public class LoginTabViewModel extends AndroidViewModel {
     private final UserRepository userRepository;
     private final SessionManager sessionManager;
-    
+
     // LiveData for UI updates
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private MutableLiveData<Boolean> loginSuccess = new MutableLiveData<>(false);
-    private MutableLiveData<User> loggedInUser = new MutableLiveData<>();
 
     public LoginTabViewModel(@NonNull Application application) {
         super(application);
@@ -33,31 +29,36 @@ public class LoginTabViewModel extends AndroidViewModel {
         this.sessionManager = SessionManager.getInstance(application);
     }
 
-    public LoginTabViewModel(Application application, UserRepository userRepository) {
-        super(application);
-        this.userRepository = userRepository;
-        this.sessionManager = SessionManager.getInstance(application);
-    }
-
     public void loginUser(String email, String password) {
         String validationError = validateInputs(email, password);
         if (validationError != null) {
-            errorMessage.setValue(validationError);
+            setErrorMessage(validationError);
             return;
         }
 
-        isLoading.setValue(true);
+        setLoading(true);
+        performLogin(userRepository.login(email, password));
+    }
 
-        userRepository.login(email, password)
-                .addOnSuccessListener(user -> {
-                    isLoading.setValue(false);
-                    loginSuccess.setValue(true);
-                    errorMessage.setValue(null);
+    public void loginWithGoogle(String idToken) {
+        if (idToken == null || idToken.isEmpty()) {
+            setErrorMessage("Google sign-in failed: Invalid token");
+            return;
+        }
+
+        setLoading(true);
+        performLogin(userRepository.loginWithGoogle(idToken));
+    }
+
+    private void performLogin(Task<User> loginTask) {
+        loginTask.addOnSuccessListener(user -> {
+                    setLoading(false);
+                    setLoginSuccess(true);
                     sessionManager.saveUserSession(user);
                 })
                 .addOnFailureListener(e -> {
-                    isLoading.setValue(false);
-                    errorMessage.setValue(e.getMessage());
+                    setLoading(false);
+                    setErrorMessage(e.getMessage());
                 });
     }
 
@@ -65,15 +66,15 @@ public class LoginTabViewModel extends AndroidViewModel {
         if (email == null || email.trim().isEmpty()) {
             return "Email is required";
         }
-        
+
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             return "Please enter a valid email address";
         }
-        
+
         if (password == null || password.trim().isEmpty()) {
             return "Password is required";
         }
-        
+
         return null; // No validation errors
     }
 
@@ -81,30 +82,16 @@ public class LoginTabViewModel extends AndroidViewModel {
         return sessionManager.isUserLoggedIn() && sessionManager.isSessionValid();
     }
 
-    public User getLoggedInUserFromPrefs() {
-        if (!isUserLoggedIn()) {
-            return null;
-        }
-        return sessionManager.getLoggedInUser();
+    private void setLoading(boolean value) {
+        isLoading.postValue(value);
     }
 
-    public void logoutUser() {
-        sessionManager.clearSession();
-        
-        loggedInUser.setValue(null);
-        loginSuccess.setValue(false);
+    public void setLoginSuccess(boolean value) {
+        loginSuccess.postValue(value);
     }
 
-    public boolean isSessionValid() {
-        return sessionManager.isSessionValid();
-    }
-
-    public void refreshSession() {
-        sessionManager.updateSessionTime();
-    }
-
-    public String getSessionToken() {
-        return sessionManager.getSessionToken();
+    public void setErrorMessage(String value) {
+        errorMessage.postValue(value);
     }
 
     public MutableLiveData<Boolean> getIsLoading() {
@@ -119,40 +106,7 @@ public class LoginTabViewModel extends AndroidViewModel {
         return loginSuccess;
     }
 
-    public MutableLiveData<User> getLoggedInUser() {
-        return loggedInUser;
-    }
-
     public void clearError() {
-        errorMessage.setValue(null);
-    }
-
-    public static class Factory extends ViewModelProvider.AndroidViewModelFactory {
-        private final Application application;
-        private UserRepository userRepository;
-
-        public Factory(@NonNull Application application) {
-            super(application);
-            this.application = application;
-        }
-
-        public Factory(@NonNull Application application, UserRepository userRepository) {
-            super(application);
-            this.application = application;
-            this.userRepository = userRepository;
-        }
-
-        @NonNull
-        @Override
-        public <T extends androidx.lifecycle.ViewModel> T create(@NonNull Class<T> modelClass) {
-            if (modelClass.isAssignableFrom(LoginTabViewModel.class)) {
-                if (userRepository != null) {
-                    return (T) new LoginTabViewModel(application, userRepository);
-                } else {
-                    return (T) new LoginTabViewModel(application);
-                }
-            }
-            return super.create(modelClass);
-        }
+        setErrorMessage(null);
     }
 }
