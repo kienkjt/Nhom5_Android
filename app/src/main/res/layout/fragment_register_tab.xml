@@ -151,7 +151,7 @@
         android:drawableStart="@drawable/ic_google"
         android:drawablePadding="-40dp"
         android:paddingStart="20dp"
-        android:text="Sign up with Google"
+        android:text="@string/google_sign_in_button_text"
         android:textAllCaps="false"
         android:textColor="@android:color/black"
         android:textSize="16sp"
