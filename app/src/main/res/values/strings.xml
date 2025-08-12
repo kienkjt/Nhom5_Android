@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Health Tracking</string>
+    <string name="default_web_client_id">437445237941-t3po1b075c9tlper543299cckp09npnt.apps.googleusercontent.com</string>
+    <string name="google_sign_in_button_text">Tiếp tục với Google</string>
 </resources>

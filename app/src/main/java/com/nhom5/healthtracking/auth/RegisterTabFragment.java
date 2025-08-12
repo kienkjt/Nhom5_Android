@@ -2,6 +2,8 @@ package com.nhom5.healthtracking.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CancellationSignal;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +15,28 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.CustomCredential;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialException;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.nhom5.healthtracking.MainActivity;
 import com.nhom5.healthtracking.R;
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+
+import static com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL;
+
+import androidx.credentials.Credential;
 
 public class RegisterTabFragment extends Fragment {
+    private static final String TAG = "RegisterTabFragment";
 
     TextInputEditText emailEditText, passwordEditText, confirmPasswordEditText;
     CheckBox termsCheckBox;
@@ -28,11 +44,25 @@ public class RegisterTabFragment extends Fragment {
     RegisterTabViewModel mViewModel;
     AppCompatButton googleSignUpButton;
     LinearLayout orSeparator;
+    private CredentialManager credentialManager;
+    private CancellationSignal cancellationSignal;
+    private GetCredentialRequest googleRequest;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_register_tab, container, false);
+        credentialManager = CredentialManager.create(requireContext());
+        cancellationSignal = new CancellationSignal();
+        GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId(getString(R.string.default_web_client_id))
+                .build();
+
+        googleRequest = new GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build();
 
         initViews(root);
         animateViews();
@@ -44,8 +74,7 @@ public class RegisterTabFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        RegisterTabViewModel.Factory factory = new RegisterTabViewModel.Factory(requireActivity().getApplication());
-        mViewModel = new ViewModelProvider(this, factory).get(RegisterTabViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(RegisterTabViewModel.class);
         
         observeViewModel();
     }
@@ -62,6 +91,7 @@ public class RegisterTabFragment extends Fragment {
 
     void setupClickListeners() {
         registerButton.setOnClickListener(v -> performRegistration());
+        googleSignUpButton.setOnClickListener(v -> beginGoogleSignIn());
     }
 
     void observeViewModel() {
@@ -142,6 +172,49 @@ public class RegisterTabFragment extends Fragment {
         // Finish the auth activity
         if (getActivity() != null) {
             getActivity().finish();
+        }
+    }
+
+    private void beginGoogleSignIn() {
+        if (credentialManager == null || googleRequest == null) return;
+
+        credentialManager.getCredentialAsync(
+                /* activity */ requireActivity(),
+                /* request  */ googleRequest,
+                /* cancel   */ cancellationSignal,
+                /* executor */ ContextCompat.getMainExecutor(requireContext()),
+                /* callback */ new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                    @Override
+                    public void onResult(GetCredentialResponse response) {
+                        Credential credential = response.getCredential();
+                        handleSignIn(credential); // bạn đã có sẵn hàm này
+                    }
+
+                    @Override
+                    public void onError(GetCredentialException e) {
+                        Log.e(TAG, "Google register failed", e);
+                        Toast.makeText(getContext(),
+                                "Đăng ký bằng Google thất bại: " + e.getClass().getSimpleName(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+    }
+
+    private void handleSignIn(Credential credential) {
+        if (credential instanceof CustomCredential &&
+                credential.getType().equals(TYPE_GOOGLE_ID_TOKEN_CREDENTIAL)) {
+
+            CustomCredential customCredential = (CustomCredential) credential;
+
+            Bundle credentialData = customCredential.getData();
+            GoogleIdTokenCredential googleIdTokenCredential =
+                    GoogleIdTokenCredential.createFrom(credentialData);
+
+            String googleIdToken = googleIdTokenCredential.getIdToken();
+            mViewModel.registerWithGoogle(googleIdToken);
+        } else {
+            Toast.makeText(getContext(), "Đăng ký Google thất bại: Không lấy được thông tin đăng ký", Toast.LENGTH_SHORT).show();
         }
     }
 }

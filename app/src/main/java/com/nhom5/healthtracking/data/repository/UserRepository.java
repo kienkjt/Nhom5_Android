@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,6 +39,26 @@ public class UserRepository {
         return userDao.observeByUid(fUser.getUid());
     }
 
+    public void upsert(User ue) {
+        IO.execute(() -> userDao.upsert(ue));
+    }
+
+    public Task<User> createNewUserFromFirebaseUser(FirebaseUser fu) {
+        final String uid = fu.getUid();
+        User ue = mapFirebaseAuthUser(fu);
+
+        upsert(ue);
+
+        DocumentReference docRef = fs.collection("users").document(uid);
+        docRef.set(toCreateMapWithServerTimestamps(ue), SetOptions.merge())
+                .addOnSuccessListener(v -> {
+                    ue.isSynced = true;
+                    ue.updatedAt = new Date();
+                    upsert(ue);
+                });
+        return Tasks.forResult(ue);
+    }
+
     /**
      * Flow:
      * - Tạo user mới bằng email và password bằng Firebase Auth
@@ -54,24 +75,15 @@ public class UserRepository {
                     FirebaseUser fu = t.getResult().getUser();
                     if (fu == null)
                         return Tasks.forException(new IllegalStateException("No FirebaseUser"));
-                    final String uid = fu.getUid();
-
-                    User ue = mapFirebaseAuthUser(fu);
-
-                    IO.execute(() -> {
-                        userDao.upsert(ue);
-                    });
-
-                    DocumentReference docRef = fs.collection("users").document(uid);
-                    docRef.set(toCreateMapWithServerTimestamps(ue), SetOptions.merge())
-                            .addOnSuccessListener(v -> {
-                                ue.isSynced = true;
-                                ue.updatedAt = new Date();
-                                IO.execute(() -> userDao.upsert(ue));
-                            });
-                    return Tasks.forResult(ue);
+                    return createNewUserFromFirebaseUser(fu);
                 });
     }
+
+    public Task<User> registerWithGoogle(String idToken) {
+        return auth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null))
+                .continueWithTask(t -> handleAuthResult(t, "Google register failed"));
+    }
+
     /**
      * Flow:
      * - Đăng nhập bằng email và password bằng Firebase Auth
@@ -81,33 +93,46 @@ public class UserRepository {
      */
     public Task<User> login(String email, String password) {
         return auth.signInWithEmailAndPassword(email, password)
-                .continueWithTask(t -> {
-                    if (!t.isSuccessful()) return Tasks.forException(t.getException());
-                    FirebaseUser fu = t.getResult().getUser();
-                    if (fu == null) return Tasks.forException(new IllegalStateException("No FirebaseUser"));
-                    final String uid = fu.getUid();
-                    DocumentReference docRef = fs.collection("users").document(uid);
+                .continueWithTask(t -> handleAuthResult(t, "Email/password login failed"));
+    }
 
-                    return docRef.get().continueWithTask(docTask -> {
-                        if (!docTask.isSuccessful())
-                            return Tasks.forException(new IllegalStateException("Firestore fetch user failed. Please try again later."));
+    public Task<User> loginWithGoogle(String idToken) {
+        return auth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null))
+                .continueWithTask(t -> handleAuthResult(t, "Google login failed"));
+    }
 
-                        DocumentSnapshot doc = docTask.getResult();
-                        if(doc == null || !doc.exists())
-                            return Tasks.forException(new IllegalStateException("User not found in Firestore. Please contact administrator."));
+    private Task<User> handleAuthResult(Task<?> authTask, String errorPrefix) {
+        if (!authTask.isSuccessful()) return Tasks.forException(authTask.getException());
+        FirebaseUser fu = auth.getCurrentUser();
+        if (fu == null)
+            return Tasks.forException(new IllegalStateException(errorPrefix + ": No FirebaseUser"));
+        final String uid = fu.getUid();
+        DocumentReference docRef = fs.collection("users").document(uid);
 
-                        User ue = mapDocToUser(uid, doc);
-                        ue.isSynced = true;
-                        IO.execute(() -> userDao.upsert(ue));
+        return docRef.get().continueWithTask(docTask -> {
+            if (!docTask.isSuccessful())
+                return Tasks.forException(new IllegalStateException("Firestore fetch user failed. Please try again later."));
 
-                        return Tasks.forResult(ue);
-                    });
-                });
+            DocumentSnapshot doc = docTask.getResult();
+            if (doc == null || !doc.exists()) {
+                // For Google login, create new user if not exists
+                if (errorPrefix.contains("Google")) {
+                    return createNewUserFromFirebaseUser(fu);
+                }
+                return Tasks.forException(new IllegalStateException("User not found in Firestore. Please contact administrator."));
+            }
+
+            User ue = mapDocToUser(uid, doc);
+            ue.isSynced = true;
+            upsert(ue);
+
+            return Tasks.forResult(ue);
+        });
     }
 
     private static User mapFirebaseAuthUser(FirebaseUser fu) {
         Date now = new Date();
-        User u =  new User();
+        User u = new User();
         u.uid = fu.getUid();
         u.email = fu.getEmail();
         u.createdAt = now;
