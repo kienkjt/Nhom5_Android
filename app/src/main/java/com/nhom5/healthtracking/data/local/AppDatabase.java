@@ -25,27 +25,27 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract SleepRecordDao sleepRecordDao();
     public abstract WaterIntakeDao waterIntakeDao();
     public abstract BloodPressureRecordDao bloodPressureRecordDao();
-    
+
     private static volatile AppDatabase INSTANCE;
     private static final String DATABASE_NAME = "health_records.db";
-    
+
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(
-                            context.getApplicationContext(),
-                            AppDatabase.class,
-                            DATABASE_NAME
-                    )
-                    .fallbackToDestructiveMigration()
-                    .build();
+                                    context.getApplicationContext(),
+                                    AppDatabase.class,
+                                    DATABASE_NAME
+                            )
+                            .fallbackToDestructiveMigration()
+                            .build();
                 }
             }
         }
         return INSTANCE;
     }
-    
+
     public static void destroyInstance() {
         INSTANCE = null;
     }

@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Quyền cần thiết -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,23 +15,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthTracking">
+
+        <!-- Màn hình đăng nhập -->
         <activity
             android:name=".auth.AuthActivity"
             android:exported="false" />
+
+        <!-- Màn hình biểu đồ lượng nước -->
         <activity
             android:name=".water.water_volume_chart"
             android:exported="false" />
+
+        <!-- Màn hình theo dõi nước -->
         <activity
             android:name=".water.water_Monitoring"
             android:exported="false" />
-        <activity android:name=".MainActivity"
+
+        <!-- MainActivity không phải launcher -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
+
+        <!-- Theo dõi cân nặng -->
+        <activity
+            android:name=".weight.WeightTrackerActivity"
+            android:exported="false" />
+
+        <!-- StepActivity là launcher -->
+        <activity
+            android:name=".step.StepActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".weight.WeightTrackerActivity" android:exported="false" />
+
     </application>
 
 </manifest>

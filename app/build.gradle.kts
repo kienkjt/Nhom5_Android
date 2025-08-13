@@ -37,9 +37,14 @@ dependencies {
     implementation(libs.legacy.support.v4)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.lifecycle.livedata)
 
     implementation(libs.room.runtime)
+    implementation(libs.play.services.fitness)
     annotationProcessor(libs.room.compiler)
+    implementation(libs.play.services.auth)        
+    implementation(libs.play.services.wearable)
     implementation(libs.jbcrypt)
     implementation(libs.security.crypto)
     implementation(platform(libs.firebase.bom))
@@ -62,4 +67,6 @@ dependencies {
     implementation(libs.mpandroidchart)
     implementation(libs.circleimageview)
     implementation(libs.recyclerview)
+
+
 }
