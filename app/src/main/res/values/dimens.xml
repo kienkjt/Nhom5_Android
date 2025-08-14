@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Text Input Layout Dimensions -->
+    <dimen name="text_input_padding_with_start_icon">45dp</dimen>
+
+    <!-- General Spacing -->
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+    <dimen name="margin_xlarge">32dp</dimen>
+
+    <!-- Button Dimensions -->
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="button_corner_radius">28dp</dimen>
+
+    <!-- Card Dimensions -->
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+</resources>

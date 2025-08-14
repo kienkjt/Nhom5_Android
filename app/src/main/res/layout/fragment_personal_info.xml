@@ -84,7 +84,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_full_name"
                         android:layout_width="match_parent"
-                        android:paddingStart="45dp"
+                        android:paddingStart="@dimen/text_input_padding_with_start_icon"
                         android:paddingEnd="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName"
@@ -164,7 +164,7 @@
                         android:focusable="false"
                         android:clickable="true"
                         android:textSize="16sp"
-                        android:paddingStart="45dp"
+                        android:paddingStart="@dimen/text_input_padding_with_start_icon"
                         android:paddingEnd="0dp"
                         android:textColor="@color/text_primary" />
 
@@ -182,7 +182,6 @@
             android:layout_marginTop="40dp"
             android:layout_marginBottom="24dp"
             android:backgroundTint="@color/button_enabled"
-            android:enabled="false"
             android:fontFamily="sans-serif-medium"
             android:text="@string/continue_button"
             android:textColor="@color/button_text_enabled"

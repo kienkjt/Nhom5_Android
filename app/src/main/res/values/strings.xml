@@ -23,4 +23,24 @@
     <string name="error_name_required">Họ và tên là bắt buộc</string>
     <string name="error_gender_required">Vui lòng chọn giới tính của bạn</string>
     <string name="error_dob_required">Ngày sinh là bắt buộc</string>
+
+    <!-- Onboarding Step 2 -->
+    <string name="onboarding_step_2_of_3">Bước 2/3</string>
+    <string name="body_metrics">Chỉ số cơ thể</string>
+    <string name="track_your_progress">Theo dõi tiến trình của bạn một cách hiệu quả</string>
+    <string name="body_metrics_subtitle">Cho chúng tôi biết các chỉ số của bạn để tạo ra một kế hoạch sức khỏe cá nhân</string>
+
+    <!-- Body Metrics Fields -->
+    <string name="height">Chiều cao</string>
+    <string name="height_hint">Nhập chiều cao của bạn</string>
+    <string name="height_unit">cm</string>
+    <string name="weight">Cân nặng</string>
+    <string name="weight_hint">Nhập cân nặng của bạn</string>
+    <string name="weight_unit">kg</string>
+
+    <string name="error_height_required">Chiều cao là bắt buộc</string>
+    <string name="error_height_invalid">Vui lòng nhập chiều cao hợp lệ (50–250 cm)</string>
+    <string name="error_weight_required">Cân nặng là bắt buộc</string>
+    <string name="error_weight_invalid">Vui lòng nhập cân nặng hợp lệ (20–300 kg)</string>
+    <string name="previous_button">Quay lại</string>
 </resources>
