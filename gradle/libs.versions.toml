@@ -24,6 +24,7 @@ playServicesAuth = "21.4.0"
 recyclerview = "1.4.0"
 roomRuntime = "2.7.2"
 securityCrypto = "1.1.0"
+playServicesFitness = "21.1.0"
 
 [libraries]
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
@@ -54,6 +55,7 @@ recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "r
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
+play-services-fitness = { module = "com.google.android.gms:play-services-fitness", version.ref = "playServicesFitness" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 

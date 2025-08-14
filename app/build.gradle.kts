@@ -63,4 +63,5 @@ dependencies {
     implementation(libs.mpandroidchart)
     implementation(libs.circleimageview)
     implementation(libs.recyclerview)
+    implementation(libs.play.services.fitness)
 }
