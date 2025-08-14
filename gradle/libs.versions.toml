@@ -20,6 +20,7 @@ firebaseFirestore = "26.0.0"
 firebaseCrashlyticsBuildtools = "3.0.5"
 mpandroidchart = "v3.1.0"
 navigationFragment = "2.9.2"
+playServicesAuth = "21.4.0"
 recyclerview = "1.4.0"
 roomRuntime = "2.7.2"
 securityCrypto = "1.1.0"
@@ -48,6 +49,7 @@ firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "fireb
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 circleimageview = { group = "de.hdodenhof", name = "circleimageview", version = "3.1.0" }
 mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
