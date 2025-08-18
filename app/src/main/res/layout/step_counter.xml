@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorSurface">
 
+    <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         app:title="Đếm bước chân"
-        app:titleTextColor="@color/colorSurface" />
+        app:titleTextColor="@color/white" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -25,46 +27,56 @@
             android:padding="16dp">
 
             <!-- Step Counter -->
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_marginBottom="24dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bước chân hôm nay"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:id="@+id/tvStepCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="5,678"
-                    android:textSize="48sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"/>
-
-                <TextView
-                    android:id="@+id/tvStepGoal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="/10,000 bước"
-                    android:textSize="14sp"
-                    android:layout_marginBottom="16dp"/>
-
-                <ProgressBar
-                    android:id="@+id/progressSteps"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:progressDrawable="@drawable/custom_progress_bar"
-                    android:progress="56"/>
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="16dp">
 
-            <!-- Step Data -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bước chân hôm nay"
+                        android:textSize="16sp"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvStepCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="0"
+                        android:textSize="52sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/tvStepGoal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="/10,000 bước"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="14sp" />
+
+                    <ProgressBar
+                        android:id="@+id/progressSteps"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:progressDrawable="@drawable/custom_progress_bar"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Distance & Calories -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,29 +88,32 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="8dp">
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="3dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:padding="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Quãng đường"
-                            android:textSize="12sp"/>
+                            android:textSize="14sp"
+                            android:textColor="@color/black"/>
 
                         <TextView
                             android:id="@+id/tvDistance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="4.2 km"
-                            android:textSize="16sp"
+                            android:layout_marginTop="8dp"
+                            android:text="0 km"
+                            android:textSize="18sp"
                             android:textStyle="bold"
-                            android:layout_marginTop="8dp"/>
+                            android:textColor="@color/colorPrimary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -106,49 +121,66 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:cardCornerRadius="8dp">
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="3dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:padding="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Calo tiêu thụ"
-                            android:textSize="12sp"/>
+                            android:textSize="14sp"
+                            android:textColor="@color/black"/>
 
                         <TextView
                             android:id="@+id/tvCalories"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="210 kcal"
-                            android:textSize="16sp"
+                            android:layout_marginTop="8dp"
+                            android:text="0 kcal"
+                            android:textSize="18sp"
                             android:textStyle="bold"
-                            android:layout_marginTop="8dp"/>
+                            android:textColor="@color/colorPrimary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- Step Chart -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Biểu đồ bước chân 7 ngày"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/chartSteps"
+            <!-- Chart -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="16dp"/>
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="3dp"
+                android:layout_marginBottom="16dp">
 
-            <!-- Step History -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Biểu đồ bước chân 7 ngày"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/chartSteps"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- History -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -160,22 +192,16 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvStepHistory"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
+                android:scrollbars="vertical"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Step Tips -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mẹo đi bộ"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
-
+            <!-- Achievements -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp">
+                app:cardCornerRadius="12dp"
+                app:cardElevation="3dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -184,11 +210,40 @@
                     android:padding="16dp">
 
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🏆 Thành tích"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tvBestDay"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="1. Đi cầu thang bộ thay vì thang máy\n2. Đi bộ trong giờ nghỉ trưa\n3. Đậu xe xa hơn nơi làm việc\n4. Đi bộ khi nói chuyện điện thoại"/>
+                        android:text="Kỷ lục: 0 bước"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvConsecutiveDays"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Chuỗi ngày đạt mục tiêu: 0 ngày"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvWeeklyAverage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Trung bình tuần này: 0 bước/ngày"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="14sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

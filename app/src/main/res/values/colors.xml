@@ -26,4 +26,5 @@
     <color name="chip_selector_color">#2196F3</color>
     <color name="colorPositive">#FF5722</color>
     <color name="primary_light">#3C22FF</color>
+    <color name="teal_700">#F44336</color>
 </resources>
