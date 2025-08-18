@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#808080</color>
 
+    <!-- Design tokens (snake_case) -->
     <color name="color_primary">#6750A4</color>
     <color name="color_primary_variant">#463770</color>
     <color name="color_on_primary">@color/white</color>
@@ -42,6 +44,7 @@
     <color name="card_background">@color/color_surface</color>
     <color name="background_light">#FAFAFA</color>
 
+    <!-- Compatibility aliases (camelCase) -->
     <color name="colorPrimary">@color/color_primary</color>
     <color name="colorPrimaryVariant">@color/color_primary_variant</color>
     <color name="colorOnPrimary">@color/color_on_primary</color>
@@ -62,4 +65,7 @@
     <color name="warningColor">@color/warning_color</color>
     <color name="errorColor">@color/error_color</color>
     <color name="colorPositive">@color/color_positive</color>
+
+    <!-- From cherry-pick still referenced somewhere -->
+    <color name="teal_700">#F44336</color>
 </resources>
