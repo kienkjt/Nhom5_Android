@@ -29,8 +29,8 @@ public class WeightRecordRepository {
     wr.weight = weight;
     wr.notes = notes;
     wr.recordedAt = new Date();
-    wr.createdAt = new Date();
-    wr.updatedAt = new Date();
+    wr.createdAt = String.valueOf(new Date());
+    wr.updatedAt = String.valueOf(new Date());
     wr.isSynced = false;
     
     IO.execute(() -> weightRecordDao.insert(wr));

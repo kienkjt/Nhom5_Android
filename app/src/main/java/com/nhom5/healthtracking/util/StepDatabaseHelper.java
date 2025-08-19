@@ -80,7 +80,7 @@ public class StepDatabaseHelper extends SQLiteOpenHelper {
         StepRecord record = null;
         if (cursor.moveToFirst()) {
             record = new StepRecord(
-                    cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)),
                     cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE)),
                     cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STEPS)),
                     cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_DISTANCE)),
@@ -91,6 +91,24 @@ public class StepDatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return record;
     }
+    public int getTodaySteps(int userId) {
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        int steps = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT " + COLUMN_STEPS + " FROM " + TABLE_STEPS + " WHERE " + COLUMN_USER_ID + "=? AND " + COLUMN_DATE + "=?",
+                new String[]{String.valueOf(userId), today}
+        );
+
+        if (cursor.moveToFirst()) {
+            steps = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return steps;
+    }
+
 
     /** Lấy 7 ngày gần nhất */
     public List<StepRecord> getLast7Days(int userId) {
@@ -107,7 +125,7 @@ public class StepDatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 records.add(new StepRecord(
-                        cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STEPS)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_DISTANCE)),
@@ -135,7 +153,7 @@ public class StepDatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 records.add(new StepRecord(
-                        cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_ID)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STEPS)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_DISTANCE)),
