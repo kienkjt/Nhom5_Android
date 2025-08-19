@@ -25,6 +25,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.model.GradientColor;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -64,7 +65,7 @@ public class StepActivity extends AppCompatActivity {
     private FitnessOptions fitnessOptions;
     private StepHistoryAdapter historyAdapter;
 
-    private static final int DAILY_GOAL = 100;
+    private static final int DAILY_GOAL = 1000;
     private static final int USER_ID = 1;
 
     private int todaySteps = 0;
@@ -198,8 +199,8 @@ public class StepActivity extends AppCompatActivity {
     private void saveStepData(int steps) {
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-        double distance = steps * 0.0008; // 1 bước ≈ 0.8m
-        double calories = steps * 0.05;   // 1 bước ≈ 0.04 kcal
+        double distance = steps * 0.00055; // 1 bước ≈ 0.55m
+        double calories = steps * 0.05;   // 1 bước ≈ 0.05 kcal
 
         StepRecord record = new StepRecord(String.valueOf(USER_ID), today, steps, distance, calories);
         dbHelper.insertOrUpdateStep(record);
@@ -213,10 +214,10 @@ public class StepActivity extends AppCompatActivity {
         progressSteps.setMax(DAILY_GOAL);
         progressSteps.setProgress(steps);
 
-        double distanceKm = steps * 0.8 / 1000;
+        double distanceKm = steps * 0.55 / 1000;
         tvDistance.setText(String.format(Locale.getDefault(), "%.2f km", distanceKm));
 
-        double calories = steps * 0.04;
+        double calories = steps * 0.05;
         tvCalories.setText(String.format(Locale.getDefault(), "%.0f kcal", calories));
 
         if (steps >= DAILY_GOAL && !goalReachedShown) {
@@ -257,19 +258,45 @@ public class StepActivity extends AppCompatActivity {
 
         // Dataset
         BarDataSet dataSet = new BarDataSet(entries, "Bước chân");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        // Gradient cho từng cột dựa theo stepCount
+        List<GradientColor> gradientColors = new ArrayList<>();
+        for (BarEntry entry : entries) {
+            if (entry.getY() < DAILY_GOAL / 2f) {
+                // <50% mục tiêu: xanh lá nhạt -> xanh lá đậm
+                gradientColors.add(new GradientColor(
+                        Color.rgb(200, 255, 200),
+                        Color.rgb(0, 200, 83)
+                ));
+            } else if (entry.getY() < DAILY_GOAL) {
+                // <100% mục tiêu: xanh dương nhạt -> xanh dương đậm
+                gradientColors.add(new GradientColor(
+                        Color.rgb(187, 222, 251),
+                        Color.rgb(33, 150, 243)
+                ));
+            } else {
+                // >= mục tiêu: vàng nhạt -> cam đậm
+                gradientColors.add(new GradientColor(
+                        Color.rgb(255, 236, 179),
+                        Color.rgb(255, 152, 0)
+                ));
+            }
+        }
+        dataSet.setGradientColors(gradientColors);
+
+        // Hiển thị số bước trên đầu cột
         dataSet.setValueTextSize(12f);
         dataSet.setValueTextColor(Color.BLACK);
         dataSet.setDrawValues(true);
 
         BarData data = new BarData(dataSet);
-        data.setBarWidth(0.2f);
+        data.setBarWidth(0.25f);
 
         // Chart config
         chartSteps.setData(data);
         chartSteps.setFitBars(true);
         chartSteps.getDescription().setEnabled(false);
-        chartSteps.setExtraOffsets(10,10,10,10);
+        chartSteps.setExtraOffsets(10, 10, 10, 10);
 
         // X Axis
         XAxis xAxis = chartSteps.getXAxis();
@@ -284,14 +311,14 @@ public class StepActivity extends AppCompatActivity {
         leftAxis.setDrawGridLines(true);
         leftAxis.setAxisMinimum(0f);
 
+        // Thêm dòng mục tiêu rõ ràng hơn
         LimitLine goalLine = new LimitLine(DAILY_GOAL, "Mục tiêu: " + DAILY_GOAL + " bước");
         goalLine.setLineColor(Color.RED);
-        goalLine.setLineWidth(2f);
+        goalLine.setLineWidth(3f);
         goalLine.setTextSize(12f);
         goalLine.setTextColor(Color.RED);
-        goalLine.enableDashedLine(10f, 10f, 0f);
+        goalLine.enableDashedLine(15f, 10f, 0f);
         leftAxis.addLimitLine(goalLine);
-
 
         chartSteps.getAxisRight().setEnabled(false);
 
@@ -300,6 +327,7 @@ public class StepActivity extends AppCompatActivity {
 
         chartSteps.invalidate();
     }
+
 
 
     private void loadStepHistory() {
