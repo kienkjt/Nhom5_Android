@@ -1,7 +1,9 @@
 package com.nhom5.healthtracking.step;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,12 +16,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.fitness.Fitness;
@@ -28,6 +34,8 @@ import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.SensorRequest;
+import com.google.android.gms.fitness.SensorsClient;
+import com.google.android.gms.fitness.RecordingClient;
 import com.nhom5.healthtracking.R;
 import com.nhom5.healthtracking.data.local.entity.StepRecord;
 import com.nhom5.healthtracking.util.StepDatabaseHelper;
@@ -103,15 +111,26 @@ public class StepActivity extends AppCompatActivity {
     }
 
     private void accessGoogleFit() {
-        // Lấy tổng số bước của hôm nay từ Google Fit
-        Fitness.getHistoryClient(this, GoogleSignIn.getLastSignedInAccount(this))
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+        // Đảm bảo đã subscribe
+        RecordingClient recordingClient = Fitness.getRecordingClient(this, account);
+        recordingClient.subscribe(DataType.TYPE_STEP_COUNT_DELTA)
+                .addOnSuccessListener(unused -> Log.i(TAG, "Subscribed to step count!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to subscribe.", e));
+
+        // Lấy tổng số bước hôm nay từ Google Fit
+        Fitness.getHistoryClient(this, account)
                 .readDailyTotal(DataType.AGGREGATE_STEP_COUNT_DELTA)
                 .addOnSuccessListener(dataSet -> {
-                    todaySteps = dataSet.isEmpty()
-                            ? 0
-                            : dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
+                    if (dataSet.isEmpty() || dataSet.getDataPoints().isEmpty()) {
+                        todaySteps = dbHelper.getTodaySteps(USER_ID);
+                        Log.w(TAG, "Google Fit trả về 0 → lấy từ DB: " + todaySteps);
+                    } else {
+                        todaySteps = dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
+                        saveStepData(todaySteps);
+                    }
 
-                    saveStepData(todaySteps);
                     updateUI(todaySteps);
                     showChart();
                     loadStepHistory();
@@ -119,12 +138,22 @@ public class StepActivity extends AppCompatActivity {
 
                     registerRealtimeListener();
                 })
-                .addOnFailureListener(e -> Log.e(TAG, "Failed to read daily steps.", e));
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failed to read daily steps.", e);
+                    todaySteps = dbHelper.getTodaySteps(USER_ID);
+                    updateUI(todaySteps);
+                    showChart();
+                    loadStepHistory();
+                    updateAchievements();
+                });
     }
 
+
     private void registerRealtimeListener() {
-        Fitness.getSensorsClient(this, GoogleSignIn.getLastSignedInAccount(this))
-                .add(
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        SensorsClient sensorsClient = Fitness.getSensorsClient(this, account);
+
+        sensorsClient.add(
                         new SensorRequest.Builder()
                                 .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
                                 .setSamplingRate(5, TimeUnit.SECONDS)
@@ -143,8 +172,7 @@ public class StepActivity extends AppCompatActivity {
                                 });
                             }
                         }
-                )
-                .addOnSuccessListener(unused -> Log.i(TAG, "Registered realtime step sensor"))
+                ).addOnSuccessListener(unused -> Log.i(TAG, "Registered realtime step sensor"))
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to track realtime steps", e));
     }
 
@@ -171,13 +199,14 @@ public class StepActivity extends AppCompatActivity {
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         double distance = steps * 0.0008; // 1 bước ≈ 0.8m
-        double calories = steps * 0.04;   // 1 bước ≈ 0.04 kcal
+        double calories = steps * 0.05;   // 1 bước ≈ 0.04 kcal
 
-        StepRecord record = new StepRecord(USER_ID, today, steps, distance, calories);
+        StepRecord record = new StepRecord(String.valueOf(USER_ID), today, steps, distance, calories);
         dbHelper.insertOrUpdateStep(record);
     }
 
 
+    @SuppressLint("SetTextI18n")
     private void updateUI(int steps) {
         tvStepCount.setText(String.valueOf(steps));
         tvStepGoal.setText("/" + DAILY_GOAL + " bước");
@@ -212,7 +241,7 @@ public class StepActivity extends AppCompatActivity {
 
         List<BarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
-        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM", Locale.getDefault());
 
         for (int i = 0; i < last7Days.size(); i++) {
             StepRecord record = last7Days.get(i);
@@ -226,25 +255,52 @@ public class StepActivity extends AppCompatActivity {
             labels.add(formattedDate);
         }
 
+        // Dataset
         BarDataSet dataSet = new BarDataSet(entries, "Bước chân");
-        dataSet.setColor(getResources().getColor(R.color.teal_700));
-        BarData data = new BarData(dataSet);
-        data.setBarWidth(0.1f);
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        dataSet.setValueTextSize(12f);
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setDrawValues(true);
 
+        BarData data = new BarData(dataSet);
+        data.setBarWidth(0.2f);
+
+        // Chart config
         chartSteps.setData(data);
         chartSteps.setFitBars(true);
         chartSteps.getDescription().setEnabled(false);
+        chartSteps.setExtraOffsets(10,10,10,10);
 
+        // X Axis
         XAxis xAxis = chartSteps.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
         xAxis.setGranularity(1f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
-        xAxis.setLabelRotationAngle(-45);
+        xAxis.setLabelRotationAngle(-25);
+
+        // Y Axis
+        YAxis leftAxis = chartSteps.getAxisLeft();
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setAxisMinimum(0f);
+
+        LimitLine goalLine = new LimitLine(DAILY_GOAL, "Mục tiêu: " + DAILY_GOAL + " bước");
+        goalLine.setLineColor(Color.RED);
+        goalLine.setLineWidth(2f);
+        goalLine.setTextSize(12f);
+        goalLine.setTextColor(Color.RED);
+        goalLine.enableDashedLine(10f, 10f, 0f);
+        leftAxis.addLimitLine(goalLine);
+
 
         chartSteps.getAxisRight().setEnabled(false);
+
+        // Animation
+        chartSteps.animateY(1500, Easing.EaseInOutQuad);
+
         chartSteps.invalidate();
     }
+
 
     private void loadStepHistory() {
         List<StepRecord> history = dbHelper.getLast7Days(USER_ID);
@@ -252,6 +308,7 @@ public class StepActivity extends AppCompatActivity {
         historyAdapter.updateData(history);
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateAchievements() {
         List<StepRecord> last7Days = dbHelper.getLast7Days(USER_ID);
 

@@ -26,10 +26,10 @@ public class WeightRecord {
     public String notes;
 
     @ColumnInfo(name = "created_at")
-    public Date createdAt;
+    public String createdAt;
 
     @ColumnInfo(name = "updated_at")
-    public Date updatedAt;
+    public String updatedAt;
 
     @ColumnInfo(name = "is_synced")
     public boolean isSynced;
@@ -56,9 +56,9 @@ public class WeightRecord {
 
     public String getNotes() { return notes; }
 
-    public Date getCreatedAt() { return createdAt; }
+    public String getCreatedAt() { return createdAt; }
 
-    public Date getUpdatedAt() { return updatedAt; }
+    public String getUpdatedAt() { return updatedAt; }
 
     public boolean isSynced() { return isSynced; }
 }
