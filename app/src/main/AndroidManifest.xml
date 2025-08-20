@@ -2,6 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Quyền cần cho Google Fit -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
+    <!-- Nếu sau này cần kết nối BLE (thiết bị đeo thông minh) thì bỏ comment các quyền này -->
+    <!--
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" tools:ignore="BluetoothPermission" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" tools:ignore="BluetoothPermission" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    -->
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -20,6 +33,8 @@
         <activity
             android:name=".auth.AuthActivity"
             android:exported="false" />
+
+        <!-- Màn hình nước -->
         <activity
             android:name=".water.water_volume_chart"
             android:exported="false" />
@@ -39,6 +54,10 @@
             android:exported="false" />
         <activity
             android:name=".step.StepActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".Blood.BloodPressureActivity"
             android:exported="false">
         </activity>
     </application>
