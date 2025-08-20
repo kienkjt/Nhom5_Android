@@ -5,28 +5,29 @@ import android.util.Patterns;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.Task;
-import com.nhom5.healthtracking.data.local.AppDatabase;
-import com.nhom5.healthtracking.data.local.entity.User;
-import com.nhom5.healthtracking.data.repository.UserRepository;
-import com.nhom5.healthtracking.util.SessionManager;
+import com.nhom5.healthtracking.HealthTrackingApp;
+import com.nhom5.healthtracking.data.repository.AuthRepository;
+import com.nhom5.healthtracking.util.AuthState;
 
 public class LoginTabViewModel extends AndroidViewModel {
-    private final UserRepository userRepository;
-    private final SessionManager sessionManager;
+    private final AuthRepository authRepository;
+    private final LiveData<AuthState> authState;
 
-    // LiveData for UI updates
-    private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
-    private MutableLiveData<String> errorMessage = new MutableLiveData<>();
-    private MutableLiveData<Boolean> loginSuccess = new MutableLiveData<>(false);
+    // UI state
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
     public LoginTabViewModel(@NonNull Application application) {
         super(application);
-        AppDatabase database = AppDatabase.getDatabase(application);
-        this.userRepository = new UserRepository(database.userDao());
-        this.sessionManager = SessionManager.getInstance(application);
+        HealthTrackingApp app = (HealthTrackingApp) application;
+        this.authRepository = app.getAuthRepository();
+        this.authState = app.getAuthState();
+        
+        // Initialize AuthRepository nếu chưa được init
+        authRepository.init();
     }
 
     public void loginUser(String email, String password) {
@@ -37,7 +38,16 @@ public class LoginTabViewModel extends AndroidViewModel {
         }
 
         setLoading(true);
-        performLogin(userRepository.login(email, password));
+        authRepository.login(email, password)
+                .addOnSuccessListener(user -> {
+                    setLoading(false);
+                    // AuthState sẽ tự động update qua AuthStateListener
+                    // UI sẽ observe AuthState để navigate
+                })
+                .addOnFailureListener(e -> {
+                    setLoading(false);
+                    setErrorMessage(e.getMessage());
+                });
     }
 
     public void loginWithGoogle(String idToken) {
@@ -47,14 +57,10 @@ public class LoginTabViewModel extends AndroidViewModel {
         }
 
         setLoading(true);
-        performLogin(userRepository.loginWithGoogle(idToken));
-    }
-
-    private void performLogin(Task<User> loginTask) {
-        loginTask.addOnSuccessListener(user -> {
+        authRepository.loginWithGoogle(idToken)
+                .addOnSuccessListener(user -> {
                     setLoading(false);
-                    setLoginSuccess(true);
-                    sessionManager.saveUserSession(user);
+                    // AuthState sẽ tự động update qua AuthStateListener
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
@@ -78,32 +84,24 @@ public class LoginTabViewModel extends AndroidViewModel {
         return null; // No validation errors
     }
 
-    public boolean isUserLoggedIn() {
-        return sessionManager.isUserLoggedIn() && sessionManager.isSessionValid();
-    }
-
     private void setLoading(boolean value) {
         isLoading.postValue(value);
-    }
-
-    public void setLoginSuccess(boolean value) {
-        loginSuccess.postValue(value);
     }
 
     public void setErrorMessage(String value) {
         errorMessage.postValue(value);
     }
 
-    public MutableLiveData<Boolean> getIsLoading() {
+    public LiveData<Boolean> getIsLoading() {
         return isLoading;
     }
 
-    public MutableLiveData<String> getErrorMessage() {
+    public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
 
-    public MutableLiveData<Boolean> getLoginSuccess() {
-        return loginSuccess;
+    public LiveData<AuthState> getAuthState() {
+        return authState;
     }
 
     public void clearError() {

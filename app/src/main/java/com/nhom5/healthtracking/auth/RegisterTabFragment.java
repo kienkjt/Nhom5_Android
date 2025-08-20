@@ -28,6 +28,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nhom5.healthtracking.MainActivity;
 import com.nhom5.healthtracking.R;
+import com.nhom5.healthtracking.data.local.entity.User;
+import com.nhom5.healthtracking.onboarding.OnboardingActivity;
+import com.nhom5.healthtracking.util.AuthState;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
@@ -47,6 +50,7 @@ public class RegisterTabFragment extends Fragment {
     private CredentialManager credentialManager;
     private CancellationSignal cancellationSignal;
     private GetCredentialRequest googleRequest;
+    private boolean isPerformingRegistration = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -65,7 +69,6 @@ public class RegisterTabFragment extends Fragment {
                 .build();
 
         initViews(root);
-        animateViews();
         setupClickListeners();
 
         return root;
@@ -99,6 +102,11 @@ public class RegisterTabFragment extends Fragment {
         mViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (isLoading != null) {
                 registerButton.setEnabled(!isLoading);
+                googleSignUpButton.setEnabled(!isLoading);
+                emailEditText.setEnabled(!isLoading);
+                passwordEditText.setEnabled(!isLoading);
+                confirmPasswordEditText.setEnabled(!isLoading);
+                termsCheckBox.setEnabled(!isLoading);
                 registerButton.setText(isLoading ? "Registering..." : "Register");
             }
         });
@@ -107,16 +115,28 @@ public class RegisterTabFragment extends Fragment {
         mViewModel.getErrorMessage().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
-                mViewModel.clearError(); // Clear error after showing
+                mViewModel.clearError();
             }
         });
 
-        // Observe registration success
-        mViewModel.getRegistrationSuccess().observe(getViewLifecycleOwner(), success -> {
-            if (success != null && success) {
+        mViewModel.getAuthState().observe(getViewLifecycleOwner(), authState -> {
+            if (authState.isAuthenticated() && isPerformingRegistration) {
+                AuthState.Authenticated authenticated = (AuthState.Authenticated) authState;
+                User profile = authenticated.getProfile();
+                
                 Toast.makeText(getContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
                 clearForm();
-                navigateToMainActivity();
+                isPerformingRegistration = false; // Reset flag
+                
+                if (profile.hasCompletedOnboarding()) {
+                    navigateToMain();
+                } else {
+                    navigateToOnboarding();
+                }
+            } else if (authState instanceof AuthState.Error && isPerformingRegistration) {
+                AuthState.Error error = (AuthState.Error) authState;
+                Toast.makeText(getContext(), "Authentication error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                isPerformingRegistration = false; // Reset flag
             }
         });
     }
@@ -127,6 +147,7 @@ public class RegisterTabFragment extends Fragment {
         String confirmPassword = confirmPasswordEditText.getText() != null ? confirmPasswordEditText.getText().toString() : "";
         boolean acceptedTerms = termsCheckBox.isChecked();
 
+        isPerformingRegistration = true;
         mViewModel.registerUser(email, password, confirmPassword, acceptedTerms);
     }
 
@@ -152,7 +173,7 @@ public class RegisterTabFragment extends Fragment {
             view.setTranslationX(translationX);
             view.setAlpha(0);
         }
-        int delay = 300;
+        int delay = 0;
         for (View view : views) {
             view.animate()
                     .translationX(0)
@@ -164,12 +185,21 @@ public class RegisterTabFragment extends Fragment {
         }
     }
 
-    void navigateToMainActivity() {
-        Intent intent = new Intent(getActivity(), MainActivity.class);
+    private void navigateToOnboarding() {
+        Intent intent = new Intent(getActivity(), OnboardingActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         
-        // Finish the auth activity
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+    }
+
+    private void navigateToMain() {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
         if (getActivity() != null) {
             getActivity().finish();
         }
@@ -212,6 +242,7 @@ public class RegisterTabFragment extends Fragment {
                     GoogleIdTokenCredential.createFrom(credentialData);
 
             String googleIdToken = googleIdTokenCredential.getIdToken();
+            isPerformingRegistration = true;
             mViewModel.registerWithGoogle(googleIdToken);
         } else {
             Toast.makeText(getContext(), "Đăng ký Google thất bại: Không lấy được thông tin đăng ký", Toast.LENGTH_SHORT).show();
