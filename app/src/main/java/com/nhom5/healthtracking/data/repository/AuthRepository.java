@@ -30,6 +30,8 @@ public class AuthRepository {
 
     private final MutableLiveData<AuthState> state = new MutableLiveData<>(AuthState.Loading.get());
     private volatile boolean initialized = false;
+    private LiveData<User> currentUserLiveData;
+    private androidx.lifecycle.Observer<User> userObserver;
 
 
     private AuthRepository(@NonNull FirebaseAuth auth,
@@ -38,6 +40,18 @@ public class AuthRepository {
         this.auth = auth;
         this.userRepository = userRepository;
         this.io = io != null ? io : Executors.newSingleThreadExecutor();
+        
+        // Initialize userObserver after auth is set
+        this.userObserver = user -> {
+            FirebaseUser fu = this.auth.getCurrentUser();
+            if (fu != null && user != null) {
+                state.postValue(new AuthState.Authenticated(fu.getUid(), user));
+            } else if (fu != null) {
+                // User is authenticated but profile not found - might be during initial creation
+                state.postValue(AuthState.Loading.get());
+            }
+        };
+        
         this.auth.addAuthStateListener(authListener);
     }
 
@@ -58,30 +72,34 @@ public class AuthRepository {
             return;
         }
 
-        io.execute(() -> {
-            User profile = userRepository.getUserByUid(fu.getUid());
-            state.postValue(new AuthState.Authenticated(fu.getUid(), profile));
+        if (currentUserLiveData == null) {
+            currentUserLiveData = userRepository.observeCurrentUser();
+            currentUserLiveData.observeForever(userObserver);
+        }
 
-            // Warm-up token không ép làm mới; nếu hết hạn, lần này online sẽ tự refresh
-            fu.getIdToken(false);
-        });
+        // Warm-up token không ép làm mới; nếu hết hạn, lần này online sẽ tự refresh
+        fu.getIdToken(false);
     }
+
+
 
     private final FirebaseAuth.AuthStateListener authListener = fbAuth -> {
         FirebaseUser fu = fbAuth.getCurrentUser();
         if (fu == null) {
+            // Stop observing user when logged out
+            if (currentUserLiveData != null) {
+                currentUserLiveData.removeObserver(userObserver);
+                currentUserLiveData = null;
+            }
             state.postValue(AuthState.Unauthenticated.get());
         } else {
-            io.execute(() -> {
-                User profile = userRepository.getUserByUid(fu.getUid());
-                // Chỉ update state nếu profile không null để tránh race condition
-                if (profile != null) {
-                    state.postValue(new AuthState.Authenticated(fu.getUid(), profile));
-                }
-            });
+            // Start observing user LiveData when logged in
+            if (currentUserLiveData == null) {
+                currentUserLiveData = userRepository.observeCurrentUser();
+                currentUserLiveData.observeForever(userObserver);
+            }
         }
     };
-
 
     /**
      * Flow:
@@ -183,5 +201,13 @@ public class AuthRepository {
 
     public LiveData<AuthState> getAuthState() {
         return state;
+    }
+
+    public void cleanup() {
+        if (currentUserLiveData != null) {
+            currentUserLiveData.removeObserver(userObserver);
+            currentUserLiveData = null;
+        }
+        auth.removeAuthStateListener(authListener);
     }
 }

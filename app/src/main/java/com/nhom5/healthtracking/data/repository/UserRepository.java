@@ -48,6 +48,12 @@ public class UserRepository {
         return userDao.observeByUid(fUser.getUid());
     }
 
+    public User getCurrentUser() {
+        FirebaseUser fUser = FirebaseModule.auth().getCurrentUser();
+        if (fUser == null) return null;
+        return userDao.findByUid(fUser.getUid());
+    }
+
     public User getUserByUid(String uid) {
         return userDao.findByUid(uid);
     }

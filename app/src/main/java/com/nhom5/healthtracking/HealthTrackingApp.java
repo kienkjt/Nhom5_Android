@@ -13,21 +13,27 @@ import com.nhom5.healthtracking.util.AuthState;
 
 public class HealthTrackingApp extends Application {
     private AuthRepository authRepository;
+    private UserRepository userRepository;
 
     @Override
     public void onCreate() {
         super.onCreate();
         UserDao userDao = AppDatabase.getDatabase(this).userDao();
-
+        
+        userRepository = UserRepository.getInstance(userDao);
         authRepository = AuthRepository
                 .create(
                         FirebaseAuth.getInstance(),
-                        UserRepository.getInstance(userDao)
+                        userRepository
                 );
     }
 
     public AuthRepository getAuthRepository() {
         return authRepository;
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
     }
 
     public LiveData<AuthState> getAuthState() {

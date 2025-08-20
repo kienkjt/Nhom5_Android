@@ -50,6 +50,11 @@ public class User {
                 ", email='" + email + '\'' +
                 ", gender='" + gender + '\'' +
                 ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", height='" + height + '\'' +
+                ", onboardingStep='" + onboardingStep + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                ", isSynced='" + isSynced + '\'' +
                 '}';
     }
 

@@ -45,7 +45,7 @@ public abstract class AuthState {
     // ---------- Authenticated ----------
     public static final class Authenticated extends AuthState {
         private final @NonNull String uid;
-        private final @NonNull User profile; // Room entity (có thể null trong lúc upsert đầu tiên)
+        private @NonNull User profile; // Room entity (có thể null trong lúc upsert đầu tiên)
 
         public Authenticated(@NonNull String uid, @NonNull User profile) {
             this.uid = uid;
@@ -54,6 +54,9 @@ public abstract class AuthState {
 
         @NonNull public String getUid() { return uid; }
         @NonNull public User getProfile() { return profile; }
+        public void updateProfile(User profile) {
+            this.profile = profile;
+        }
 
         @Override
         public boolean equals(Object o) {
