@@ -35,7 +35,7 @@ public class BloodPressureRecordRepository {
     bpr.createdAt = new Date();
     bpr.updatedAt = new Date();
     bpr.isSynced = false;
-    
+
     IO.execute(() -> bloodPressureRecordDao.insert(bpr));
   }
 
@@ -56,7 +56,7 @@ public class BloodPressureRecordRepository {
   public List<BloodPressureRecord> getRecordsByUserIdAndDay(String userId, Date date) {
     Date startOfDay = DateUtils.getStartOfDay(date);
     Date endOfDay = DateUtils.getEndOfDay(date);
-    
+
     return bloodPressureRecordDao.getRecordsByUserIdAndDateRange(userId, startOfDay.getTime(), endOfDay.getTime());
   }
 
@@ -70,7 +70,7 @@ public class BloodPressureRecordRepository {
   public List<BloodPressureRecord> getRecordsByUserIdAndDateRange(String userId, Date startDate, Date endDate) {
     Date startOfDay = DateUtils.getStartOfDay(startDate);
     Date endOfDay = DateUtils.getEndOfDay(endDate);
-    
+
     return bloodPressureRecordDao.getRecordsByUserIdAndDateRange(userId, startOfDay.getTime(), endOfDay.getTime());
   }
 }

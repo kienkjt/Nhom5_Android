@@ -50,3 +50,4 @@ public abstract class AppDatabase extends RoomDatabase {
         INSTANCE = null;
     }
 }
+

@@ -25,9 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthTracking">
 
-        <!-- StepActivity chạy đầu tiên -->
+        <!-- BloodPressureActivity chạy đầu tiên -->
         <activity
-            android:name=".step.StepActivity"
+            android:name=".Blood.BloodPressureActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,12 +45,17 @@
             android:name=".MainActivity"
             android:exported="false" />
 
+        <!-- Màn hình theo dõi bước chân -->
+        <activity
+            android:name=".step.StepActivity"
+            android:exported="false" />
+
         <!-- Màn hình theo dõi cân nặng -->
         <activity
             android:name=".weight.WeightTrackerActivity"
             android:exported="false" />
 
-        <!-- Màn hình nước -->
+        <!-- Màn hình theo dõi nước -->
         <activity
             android:name=".water.water_volume_chart"
             android:exported="false" />
