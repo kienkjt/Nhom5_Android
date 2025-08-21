@@ -30,6 +30,12 @@
     <string name="track_your_progress">Theo dõi tiến trình của bạn một cách hiệu quả</string>
     <string name="body_metrics_subtitle">Cho chúng tôi biết các chỉ số của bạn để tạo ra một kế hoạch sức khỏe cá nhân</string>
 
+    <!-- Onboarding Step 3 -->
+    <string name="onboarding_step_3_of_3">Bước 3/3</string>
+    <string name="health_goals">Mục tiêu sức khỏe</string>
+    <string name="set_your_goals">Đặt mục tiêu sức khỏe của bạn</string>
+    <string name="health_goals_subtitle">Chúng tôi cần một số thông tin cơ bản</string>
+
     <!-- Body Metrics Fields -->
     <string name="height">Chiều cao</string>
     <string name="height_hint">Nhập chiều cao của bạn</string>
@@ -44,4 +50,6 @@
     <string name="error_weight_invalid">Vui lòng nhập cân nặng hợp lệ (20–300 kg)</string>
 
     <string name="previous_button">Quay lại</string>
+    <string name="finish_button">Hoàn thành</string>
+    <string name="skip_button">Bỏ qua</string>
 </resources>

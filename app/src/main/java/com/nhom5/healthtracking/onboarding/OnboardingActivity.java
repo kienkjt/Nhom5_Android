@@ -19,6 +19,7 @@ import com.nhom5.healthtracking.R;
 import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.onboarding.step_one.PersonalInfoFragment;
 import com.nhom5.healthtracking.onboarding.step_two.BodyMetricsFragment;
+import com.nhom5.healthtracking.onboarding.step_three.HealthGoalsFragment;
 import com.nhom5.healthtracking.util.AuthState;
 
 import java.util.Date;
@@ -101,8 +102,7 @@ public class OnboardingActivity extends AppCompatActivity {
                 fragment = BodyMetricsFragment.newInstance();
                 break;
             case 3:
-                // TODO: Create Step 3 fragment
-                fragment = PersonalInfoFragment.newInstance(); // Temporary
+                fragment = HealthGoalsFragment.newInstance();
                 break;
             default:
                 Log.e(TAG, "Unknown step: " + step);
