@@ -1,10 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".sleep.SleepTracker">
+    android:orientation="vertical"
+    android:paddingTop="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:background="#F8F9FA">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2B4C7E"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="315dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sleep Tracker"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/moon2"
+            android:tint="#FFFFFF"
+            tools:ignore="UseAppTint" />
+    </LinearLayout>
+
+    <!-- Chart: Bar chart -->
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="12dp" />
+
+    <!-- Duration -->
+    <LinearLayout
+        android:paddingTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Duration"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginEnd="16dp" />
+
+        <TextView
+            android:id="@+id/tvDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Not started"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- Sleep Time -->
+    <LinearLayout
+        android:weightSum="10"
+        android:paddingTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:text="Sleep Time"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btnSleepTime"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/moon_bg"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:contentDescription="Wake Up"
+            />
+    </LinearLayout>
+
+    <!-- Wake Time -->
+    <LinearLayout
+        android:paddingTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:text="Wake Time"
+            android:textStyle="bold"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/btnWakeTime"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/sun"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:contentDescription="Wake Up"
+            />
+
+    </LinearLayout>
+
+    <!-- Sleep Quality -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Sleep Quality"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_marginTop="5dp" />
+
+    <!-- Rating bar -->
+    <LinearLayout
+        android:id="@+id/layoutStars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp">
+
+        <ImageButton
+            android:id="@+id/star1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_star_border_24"
+            android:background="@android:color/transparent"
+            android:contentDescription="Star 1" />
+
+        <ImageButton
+            android:id="@+id/star2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_star_border_24"
+            android:background="@android:color/transparent"
+            android:contentDescription="Star 2" />
+
+        <ImageButton
+            android:id="@+id/star3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_star_border_24"
+            android:background="@android:color/transparent"
+            android:contentDescription="Star 3" />
+
+        <ImageButton
+            android:id="@+id/star4"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_star_border_24"
+            android:background="@android:color/transparent"
+            android:contentDescription="Star 4" />
+
+        <ImageButton
+            android:id="@+id/star5"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_star_border_24"
+            android:background="@android:color/transparent"
+            android:contentDescription="Star 5" />
+
+    </LinearLayout>
+
+    <!-- Notes -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Notes"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp" />
+
+    <EditText
+        android:id="@+id/etNotes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Add notes"
+        android:background="@android:drawable/edit_text"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/btn_History"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:textColor="#40C4FF"
+        android:text="View History" />
+</LinearLayout>

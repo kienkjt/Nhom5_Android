@@ -3,8 +3,11 @@ package com.nhom5.healthtracking;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,8 +19,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nhom5.healthtracking.auth.AuthActivity;
 import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.onboarding.OnboardingActivity;
+import com.nhom5.healthtracking.sleep.SleepTracker;
 import com.nhom5.healthtracking.user_settings.UserSettingsActivity;
 import com.nhom5.healthtracking.util.AuthState;
+import com.nhom5.healthtracking.water.water_Monitoring;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     
@@ -25,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     
     private FloatingActionButton fabAuth;
     private TextView textView;
+    private ImageButton imgblood , imgwater , imgprofile , imgweight , imgsleep , imgstep ;
     private HealthTrackingApp app;
     
     @Override
@@ -36,6 +44,23 @@ public class MainActivity extends AppCompatActivity {
         setupWindowInsets();
         initApp();
         observeAuthState();
+        imgwater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this , water_Monitoring.class);
+                startActivity(intent);
+            }
+        });
+
+        imgsleep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this , SleepTracker.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
     
     private void setupWindowInsets() {
@@ -90,7 +115,12 @@ public class MainActivity extends AppCompatActivity {
     
     private void initViews() {
         fabAuth = findViewById(R.id.fab_auth);
-        textView = findViewById(R.id.text_view);
+        imgblood = findViewById(R.id.img_blood);
+        imgprofile = findViewById(R.id.img_profile);
+        imgsleep = findViewById(R.id.img_sleep);
+        imgstep = findViewById(R.id.img_step);
+        imgwater = findViewById(R.id.img_water);
+        imgweight = findViewById(R.id.img_weight);
     }
     
     private void displayUserInfo(User user) {
