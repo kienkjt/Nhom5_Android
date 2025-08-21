@@ -18,38 +18,38 @@
             android:id="@+id/tv_step_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/onboarding_step_1_of_3"
-            android:textSize="14sp"
-            android:textColor="@color/text_secondary"
             android:fontFamily="sans-serif-medium"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:text="@string/onboarding_step_1_of_3"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/personal_information"
-            android:textSize="20sp"
-            android:textColor="@color/text_primary"
-            android:fontFamily="sans-serif-medium"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_step_indicator"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/personal_information"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_step_indicator" />
 
         <TextView
             android:id="@+id/tv_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/personal_info_subtitle"
-            android:textSize="12sp"
-            android:textColor="@color/text_secondary"
-            android:lineSpacingExtra="4dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            android:lineSpacingExtra="4dp"
+            android:text="@string/personal_info_subtitle"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
         <!-- Form Card -->
         <androidx.cardview.widget.CardView
@@ -57,12 +57,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            app:cardBackgroundColor="@color/card_background"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
-            app:cardBackgroundColor="@color/card_background"
-            app:layout_constraintTop_toBottomOf="@id/tv_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/tv_subtitle">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -73,23 +73,23 @@
                 <!-- Full Name Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_full_name"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/full_name"
-                    app:startIconDrawable="@drawable/ic_person_24px"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     app:boxStrokeColor="@color/primary_green"
-                    app:hintTextColor="@color/primary_green">
+                    app:hintTextColor="@color/primary_green"
+                    app:startIconDrawable="@drawable/ic_person_24px">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_full_name"
                         android:layout_width="match_parent"
-                        android:paddingStart="@dimen/text_input_padding_with_start_icon"
-                        android:paddingEnd="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName"
-                        android:textSize="16sp"
-                        android:textColor="@color/text_primary" />
+                        android:paddingStart="@dimen/text_input_padding_with_start_icon"
+                        android:paddingEnd="0dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,12 +97,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/gender"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_primary"
-                    android:fontFamily="sans-serif-medium"
                     android:layout_marginTop="24dp"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/gender"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
 
                 <RadioGroup
                     android:id="@+id/rg_gender"
@@ -116,8 +116,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/gender_male"
-                        android:textSize="14sp"
                         android:textColor="@color/text_primary"
+                        android:textSize="14sp"
                         app:buttonTint="@color/primary_green" />
 
                     <com.google.android.material.radiobutton.MaterialRadioButton
@@ -126,8 +126,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/gender_female"
-                        android:textSize="14sp"
                         android:textColor="@color/text_primary"
+                        android:textSize="14sp"
                         app:buttonTint="@color/primary_green" />
 
                     <com.google.android.material.radiobutton.MaterialRadioButton
@@ -137,8 +137,8 @@
                         android:layout_weight="1"
                         android:checked="true"
                         android:text="@string/gender_other"
-                        android:textSize="14sp"
                         android:textColor="@color/text_primary"
+                        android:textSize="14sp"
                         app:buttonTint="@color/primary_green" />
 
                 </RadioGroup>
@@ -146,27 +146,27 @@
                 <!-- Date of Birth Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_date_of_birth"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:hint="@string/date_of_birth"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     app:boxStrokeColor="@color/primary_green"
-                    app:hintTextColor="@color/primary_green"
                     app:endIconMode="custom"
+                    app:hintTextColor="@color/primary_green"
                     app:startIconDrawable="@drawable/outline_calendar_today_24">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_date_of_birth"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:focusable="false"
                         android:clickable="true"
-                        android:textSize="16sp"
+                        android:focusable="false"
+                        android:inputType="none"
                         android:paddingStart="@dimen/text_input_padding_with_start_icon"
                         android:paddingEnd="0dp"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -177,10 +177,8 @@
         <!-- Continue Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_continue"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:backgroundTint="@color/button_enabled"
             android:fontFamily="sans-serif-medium"
             android:text="@string/continue_button"
@@ -189,10 +187,7 @@
             app:cornerRadius="28dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_form"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -120,16 +120,12 @@
                         android:textSize="16sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
-
-
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_skip"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/gray"
             android:text="@string/previous_button"
@@ -137,14 +133,14 @@
             android:textSize="16sp"
             app:cornerRadius="28dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_continue"
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_continue"
             android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="24dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:backgroundTint="@color/button_enabled"
             android:fontFamily="sans-serif-medium"
             android:text="@string/continue_button"
@@ -153,10 +149,7 @@
             app:cornerRadius="28dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_metrics"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintStart_toEndOf="@id/btn_skip" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -126,7 +126,6 @@ public class PersonalInfoFragment extends Fragment {
         btnContinue.setOnClickListener(v -> {
             if (validateForm()) {
                 savePersonalInfo();
-                proceedToNextStep();
             }
         });
     }
@@ -195,7 +194,6 @@ public class PersonalInfoFragment extends Fragment {
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> {
                             Toast.makeText(getContext(), "Đã lưu thông tin cá nhân thành công!", Toast.LENGTH_SHORT).show();
-                            proceedToNextStep();
                         });
                     }
                 }
@@ -222,11 +220,5 @@ public class PersonalInfoFragment extends Fragment {
             return "Other";
         }
         return "";
-    }
-
-    private void proceedToNextStep() {
-        if (getActivity() != null && getActivity() instanceof com.nhom5.healthtracking.onboarding.OnboardingActivity) {
-            ((com.nhom5.healthtracking.onboarding.OnboardingActivity) getActivity()).goToNextStep();
-        }
     }
 }

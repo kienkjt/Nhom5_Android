@@ -196,7 +196,6 @@ public class BodyMetricsFragment extends Fragment {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getContext(), "Đã lưu thông tin cơ thể thành công!", Toast.LENGTH_SHORT).show();
-                        proceedToNextStep();
                     });
                 }
             }
@@ -211,13 +210,6 @@ public class BodyMetricsFragment extends Fragment {
                 }
             }
         });
-    }
-
-    private void proceedToNextStep() {
-
-        if (getActivity() != null && getActivity() instanceof com.nhom5.healthtracking.onboarding.OnboardingActivity) {
-            ((com.nhom5.healthtracking.onboarding.OnboardingActivity) getActivity()).goToNextStep();
-        }
     }
 
     private static class NumericInputFilter implements InputFilter {

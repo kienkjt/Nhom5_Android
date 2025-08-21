@@ -68,6 +68,7 @@ public class BodyMetricsViewModel extends ViewModel {
 
                 // Save height to User (convert cm to Long for storage)
                 currentUser.height = (long) heightValue;
+                currentUser.onboardingStep = 3L;
                 currentUser.updatedAt = new Date();
                 currentUser.isSynced = false;
                 userRepository.upsertSync(currentUser);
