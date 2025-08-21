@@ -52,4 +52,29 @@
     <string name="previous_button">Quay lại</string>
     <string name="finish_button">Hoàn thành</string>
     <string name="skip_button">Bỏ qua</string>
+
+    
+    <!-- Card 1 -->
+    <string name="user_name">Tên người dùng</string>
+    <string name="user_email">Email</string>
+    <string name="user_phone">Số điện thoại</string>
+    <string name="user_address">Địa chỉ</string>
+    <string name="user_gender">Giới tính</string>
+    <string name="user_date_of_birth">Ngày sinh</string>
+    <string name="user_height">Chiều cao</string>
+    <string name="user_weight">Cân nặng</string>
+    <string name="user_health_goals">Mục tiêu sức khỏe</string>
+    <string name="edit_profile">Sửa hồ sơ</string>
+    <string name="edit_profile_description">Chỉnh sửa thông tin hồ sơ cá nhân</string>
+
+    <!-- Card 2 -->
+    <string name="notification">Thông báo</string>
+    <string name="toggle_notification">Bật/tắt thông báo</string>
+    <string name="toggle_notification_vibration">Rung khi thông báo</string>
+
+    <!-- Card 3 -->
+    <string name="logout">Đăng xuất</string>
+
+    <!-- User Settings -->
+    <string name="user_settings">Cài đặt người dùng</string>
 </resources>

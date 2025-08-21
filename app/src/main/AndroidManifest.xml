@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthTracking">
         <activity
+            android:name=".user_settings.UserSettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".onboarding.OnboardingActivity"
             android:exported="false" />
         <activity
@@ -24,14 +27,18 @@
         <activity
             android:name=".water.water_Monitoring"
             android:exported="false" />
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".weight.WeightTrackerActivity" android:exported="false" />
+        <activity
+            android:name=".weight.WeightTrackerActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

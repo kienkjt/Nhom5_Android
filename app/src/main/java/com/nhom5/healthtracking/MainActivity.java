@@ -16,6 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nhom5.healthtracking.auth.AuthActivity;
 import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.onboarding.OnboardingActivity;
+import com.nhom5.healthtracking.user_settings.UserSettingsActivity;
 import com.nhom5.healthtracking.util.AuthState;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     
     private FloatingActionButton fabAuth;
-    private Button logoutButton;
     private TextView textView;
     private HealthTrackingApp app;
     
@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
     
     private void initViews() {
         fabAuth = findViewById(R.id.fab_auth);
-        logoutButton = findViewById(R.id.logout_button);
         textView = findViewById(R.id.text_view);
     }
     
@@ -104,14 +103,8 @@ public class MainActivity extends AppCompatActivity {
     }
     
     private void setupClickListeners() {
-        if (logoutButton != null) {
-            logoutButton.setOnClickListener(v -> {
-                app.getAuthRepository().logout();
-            });
-        }
-        
         if (fabAuth != null) {
-            fabAuth.setOnClickListener(v -> redirectToAuth());
+            fabAuth.setOnClickListener(v -> redirectToUserSettings());
         }
     }
     
@@ -127,5 +120,10 @@ public class MainActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void redirectToUserSettings() {
+        Intent intent = new Intent(this, UserSettingsActivity.class);
+        startActivity(intent);
     }
 }
