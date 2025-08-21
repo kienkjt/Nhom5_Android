@@ -5,29 +5,28 @@ import android.util.Patterns;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.Task;
-import com.nhom5.healthtracking.data.local.AppDatabase;
-import com.nhom5.healthtracking.data.local.entity.User;
-import com.nhom5.healthtracking.data.repository.UserRepository;
+import com.nhom5.healthtracking.HealthTrackingApp;
 import com.nhom5.healthtracking.constant.AuthConstant;
-import com.nhom5.healthtracking.util.SessionManager;
+import com.nhom5.healthtracking.data.local.entity.User;
+import com.nhom5.healthtracking.data.repository.AuthRepository;
+import com.nhom5.healthtracking.util.AuthState;
 
 public class RegisterTabViewModel extends AndroidViewModel {
-    private final UserRepository userRepository;
-    private final SessionManager sessionManager;
-    // LiveData for UI updates
-    private MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
-    private MutableLiveData<String> errorMessage = new MutableLiveData<>();
-    private MutableLiveData<Boolean> registrationSuccess = new MutableLiveData<>(false);
+    private final AuthRepository authRepository;
+    private final LiveData<AuthState> authState;
+
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
     public RegisterTabViewModel(@NonNull Application application) {
         super(application);
-        AppDatabase database = AppDatabase.getDatabase(application);
-        this.userRepository = new UserRepository(database.userDao());
-        this.sessionManager = SessionManager.getInstance(application);
+        HealthTrackingApp app = (HealthTrackingApp) application;
+        this.authRepository = app.getAuthRepository();
+        this.authState = app.getAuthState();
     }
 
     public void registerUser(String email, String password, String confirmPassword, boolean acceptedTerms) {
@@ -38,9 +37,15 @@ public class RegisterTabViewModel extends AndroidViewModel {
         }
 
         setLoading(true);
-        performRegistration(userRepository.register(email, password));
+        authRepository.register(email, password)
+                .addOnSuccessListener(user -> {
+                    setLoading(false);
+                })
+                .addOnFailureListener(e -> {
+                    setLoading(false);
+                    setErrorMessage(e.getMessage());
+                });
     }
-
 
     public void registerWithGoogle(String idToken) {
         if (idToken == null || idToken.isEmpty()) {
@@ -49,15 +54,9 @@ public class RegisterTabViewModel extends AndroidViewModel {
         }
 
         setLoading(true);
-        performRegistration(userRepository.registerWithGoogle(idToken));
-    }
-
-    private void performRegistration(Task<User> registerTask) {
-        registerTask.addOnSuccessListener(user -> {
+        authRepository.registerWithGoogle(idToken)
+                .addOnSuccessListener(user -> {
                     setLoading(false);
-                    setRegistrationSuccess(true);
-                    setErrorMessage(null);
-                    sessionManager.saveUserSession(user);
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
@@ -93,7 +92,7 @@ public class RegisterTabViewModel extends AndroidViewModel {
         return null; // No validation errors
     }
 
-    public void setLoading(boolean value) {
+    private void setLoading(boolean value) {
         isLoading.postValue(value);
     }
 
@@ -101,24 +100,18 @@ public class RegisterTabViewModel extends AndroidViewModel {
         errorMessage.postValue(value);
     }
 
-    public void setRegistrationSuccess(boolean value) {
-        registrationSuccess.postValue(value);
-    }
-
-    // Getters for LiveData
-    public MutableLiveData<Boolean> getIsLoading() {
+    public LiveData<Boolean> getIsLoading() {
         return isLoading;
     }
 
-    public MutableLiveData<String> getErrorMessage() {
+    public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
 
-    public MutableLiveData<Boolean> getRegistrationSuccess() {
-        return registrationSuccess;
+    public LiveData<AuthState> getAuthState() {
+        return authState;
     }
 
-    // Clear error message
     public void clearError() {
         setErrorMessage(null);
     }

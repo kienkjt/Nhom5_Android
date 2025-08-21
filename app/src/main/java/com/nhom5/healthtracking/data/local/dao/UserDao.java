@@ -25,4 +25,7 @@ public interface UserDao {
 
     @Query("SELECT * FROM users WHERE uid = :uid")
     LiveData<User> observeByUid(String uid);
+
+    @Query("SELECT * FROM users WHERE uid = :uid")
+    User findByUid(String uid);
 }
