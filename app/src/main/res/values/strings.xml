@@ -42,5 +42,6 @@
     <string name="error_height_invalid">Vui lòng nhập chiều cao hợp lệ (50–250 cm)</string>
     <string name="error_weight_required">Cân nặng là bắt buộc</string>
     <string name="error_weight_invalid">Vui lòng nhập cân nặng hợp lệ (20–300 kg)</string>
+
     <string name="previous_button">Quay lại</string>
 </resources>

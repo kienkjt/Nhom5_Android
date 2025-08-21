@@ -33,7 +33,7 @@
             android:fontFamily="sans-serif-medium"
             android:text="@string/body_metrics"
             android:textColor="@color/text_primary"
-            android:textSize="28sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_step" />
@@ -46,7 +46,7 @@
             android:lineSpacingExtra="4dp"
             android:text="@string/body_metrics_subtitle"
             android:textColor="@color/text_secondary"
-            android:textSize="16sp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
@@ -121,53 +121,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- BMI Info Card -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_bmi_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:visibility="gone"
-                    app:cardBackgroundColor="@color/light_green"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="Your BMI"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/tv_bmi_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="sans-serif-bold"
-                            android:textColor="@color/primary_green"
-                            android:textSize="20sp"
-                            tools:text="22.5" />
-
-                        <TextView
-                            android:id="@+id/tv_bmi_category"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="12sp"
-                            tools:text="Normal weight" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 

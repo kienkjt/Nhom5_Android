@@ -32,8 +32,7 @@ public class WeightRecordRepository {
     wr.createdAt = new Date();
     wr.updatedAt = new Date();
     wr.isSynced = false;
-    
-    IO.execute(() -> weightRecordDao.insert(wr));
+    weightRecordDao.insert(wr);
   }
 
   public List<WeightRecord> getAllByUserId(String userId) {
