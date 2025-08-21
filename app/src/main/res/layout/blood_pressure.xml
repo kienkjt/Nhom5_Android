@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -13,7 +14,8 @@
         app:title="Theo dõi huyết áp"
         app:titleTextColor="@color/colorSurface" />
 
-    <ScrollView
+    <!-- Scroll content -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -33,10 +35,10 @@
                 android:layout_marginBottom="24dp">
 
                 <TextView
+                    style="@style/TextAppearance.MaterialComponents.Body1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Huyết áp gần đây nhất"
-                    android:textSize="16sp"/>
+                    android:text="Huyết áp gần đây nhất" />
 
                 <TextView
                     android:id="@+id/tvCurrentBP"
@@ -45,7 +47,7 @@
                     android:text="120/80 mmHg"
                     android:textSize="32sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginTop="8dp" />
 
                 <TextView
                     android:id="@+id/tvBPCategory"
@@ -59,12 +61,11 @@
 
             <!-- Add BP -->
             <TextView
+                style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Thêm chỉ số huyết áp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -83,7 +84,7 @@
                         android:id="@+id/etSystolic"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"/>
+                        android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -96,68 +97,108 @@
                         android:id="@+id/etDiastolic"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"/>
+                        android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:hint="Ghi chú"
+                android:layout_marginBottom="8dp">
 
-                <Button
-                    android:id="@+id/btnAddBP"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:text="Lưu chỉ số"
-                    android:textColor="@color/colorSurface" />
-            </LinearLayout>
+                    android:inputType="textMultiLine"
+                    android:minLines="2"
+                    android:gravity="top|start" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddBP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lưu chỉ số"
+                style="@style/Widget.MaterialComponents.Button"
+                app:cornerRadius="12dp"
+                app:backgroundTint="@color/colorPrimary"
+                android:textColor="@color/colorSurface"
+                android:layout_marginBottom="16dp" />
 
             <!-- BP Chart -->
             <TextView
+                style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Biểu đồ huyết áp 7 ngày"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
-
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chartBP"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- BP History -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lịch sử huyết áp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvBPHistory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- BP Info -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thông tin huyết áp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp">
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <Spinner
+                        android:id="@+id/spinnerMode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chartBP"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- BP History -->
+<!--            <TextView-->
+<!--                style="@style/TextAppearance.MaterialComponents.Headline6"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Lịch sử huyết áp"-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                android:layout_marginBottom="8dp" />-->
+
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/rvBPHistory"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:nestedScrollingEnabled="false"-->
+<!--                android:scrollbars="vertical" />-->
+            <TextView android:id="@+id/tvHistoryTitle"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lịch sử huyết áp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/colorPrimary"
+                android:clickable="true"
+                android:focusable="true"/>
+            <!-- BP Info -->
+            <TextView
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thông tin huyết áp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -166,11 +207,12 @@
                     android:padding="16dp">
 
                     <TextView
+                        style="@style/TextAppearance.MaterialComponents.Body2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="1. Huyết áp bình thường: Dưới 120/80 mmHg\n2. Tiền cao huyết áp: 120-139/80-89 mmHg\n3. Cao huyết áp: 140/90 mmHg trở lên\n4. Thấp huyết áp: Dưới 90/60 mmHg"/>
+                        android:text="1. Huyết áp bình thường: Dưới 120/80 mmHg\n2. Tiền cao huyết áp: 120-139/80-89 mmHg\n3. Cao huyết áp: 140/90 mmHg trở lên\n4. Thấp huyết áp: Dưới 90/60 mmHg" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

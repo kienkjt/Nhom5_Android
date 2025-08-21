@@ -53,7 +53,7 @@
     <string name="finish_button">Hoàn thành</string>
     <string name="skip_button">Bỏ qua</string>
 
-    
+
     <!-- Card 1 -->
     <string name="user_name">Tên người dùng</string>
     <string name="user_email">Email</string>
@@ -77,4 +77,10 @@
 
     <!-- User Settings -->
     <string name="user_settings">Cài đặt người dùng</string>
+
+    <string-array name="filter_options">
+        <item>Ngày</item>
+        <item>Tuần</item>
+        <item>Tháng</item>
+    </string-array>
 </resources>
