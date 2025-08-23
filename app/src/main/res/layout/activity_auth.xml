@@ -60,7 +60,7 @@
         android:id="@+id/imageView3"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/logo"
+        android:src="@mipmap/ic_logo_round"
         app:layout_constraintBottom_toTopOf="@+id/constraint_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to HeathTracking"
+        android:text="Welcome to Health Tracking"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
