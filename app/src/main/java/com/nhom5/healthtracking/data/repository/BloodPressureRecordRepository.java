@@ -36,7 +36,7 @@ public class BloodPressureRecordRepository {
     bpr.updatedAt = new Date();
     bpr.isSynced = false;
 
-    IO.execute(() -> bloodPressureRecordDao.insert(bpr));
+    bloodPressureRecordDao.insert(bpr);
   }
 
   public List<BloodPressureRecord> getAllByUserId(String userId) {

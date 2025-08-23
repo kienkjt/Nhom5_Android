@@ -23,6 +23,7 @@ public class BloodPressureViewModel extends AndroidViewModel {
     private final BloodPressureRecordRepository repository;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final MutableLiveData<List<BloodPressureRecord>> recordsLiveData = new MutableLiveData<>();
+    private String currentUserId;
 
     public BloodPressureViewModel(@NonNull Application application) {
         super(application);
@@ -31,18 +32,24 @@ public class BloodPressureViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<BloodPressureRecord>> getAllRecords(String userId) {
-        executor.execute(() -> {
-            List<BloodPressureRecord> list = repository.getAllByUserId(userId);
-            recordsLiveData.postValue(list);
-        });
+        this.currentUserId = userId;
+        loadRecords();
         return recordsLiveData;
+    }
+
+    private void loadRecords() {
+        if (currentUserId != null) {
+            executor.execute(() -> {
+                List<BloodPressureRecord> list = repository.getAllByUserId(currentUserId);
+                recordsLiveData.postValue(list);
+            });
+        }
     }
 
     public void insert(String userId, int systolic, int diastolic, int pulse, Date measuredAt, String notes) {
         executor.execute(() -> {
             repository.insert(userId, systolic, diastolic, pulse, measuredAt, notes);
-            List<BloodPressureRecord> list = repository.getAllByUserId(userId);
-            recordsLiveData.postValue(list);
+            loadRecords();
         });
     }
 

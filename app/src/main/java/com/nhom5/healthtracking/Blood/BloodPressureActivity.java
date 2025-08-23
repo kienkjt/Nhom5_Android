@@ -136,10 +136,17 @@ public class BloodPressureActivity extends AppCompatActivity {
                 return;
             }
 
+            // Validate blood pressure values
+            if (systolic < 50 || systolic > 250 || diastolic < 30 || diastolic > 150) {
+                Toast.makeText(this, "Chỉ số huyết áp không trong khoảng hợp lệ", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             viewModel.insert(userId, systolic, diastolic, 70, new Date(), note);
             etSystolic.setText("");
             etDiastolic.setText("");
             etNote.setText("");
+            Toast.makeText(this, "Đã thêm bản ghi huyết áp", Toast.LENGTH_SHORT).show();
         });
     }
 
