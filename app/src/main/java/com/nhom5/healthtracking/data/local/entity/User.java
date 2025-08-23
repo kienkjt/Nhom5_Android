@@ -88,6 +88,7 @@ public class User {
         if (dateOfBirth == null) return null;
         Calendar today = java.util.Calendar.getInstance();
         Calendar birth = java.util.Calendar.getInstance();
+        birth.setTime(dateOfBirth);
 
         int years = today.get(java.util.Calendar.YEAR) - birth.get(java.util.Calendar.YEAR);
 

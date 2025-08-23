@@ -3,11 +3,7 @@ package com.nhom5.healthtracking;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import androidx.appcompat.widget.Toolbar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,40 +11,41 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.nhom5.healthtracking.auth.AuthActivity;
+import com.google.android.material.card.MaterialCardView;
 import com.nhom5.healthtracking.Blood.BloodPressureActivity;
+import com.nhom5.healthtracking.auth.AuthActivity;
 import com.nhom5.healthtracking.data.local.entity.User;
+import com.nhom5.healthtracking.data.repository.UserRepository;
+import com.nhom5.healthtracking.data.repository.WeightRecordRepository;
 import com.nhom5.healthtracking.onboarding.OnboardingActivity;
 import com.nhom5.healthtracking.sleep.SleepTracker;
 import com.nhom5.healthtracking.step.StepActivity;
 import com.nhom5.healthtracking.user_settings.UserSettingsActivity;
 import com.nhom5.healthtracking.util.AuthState;
+import com.nhom5.healthtracking.util.BMICal;
+import com.nhom5.healthtracking.water.WaterDataManager;
 import com.nhom5.healthtracking.water.water_Monitoring;
 import com.nhom5.healthtracking.weight.WeightTrackerActivity;
 
-import java.util.Objects;
-
 public class MainActivity extends AppCompatActivity {
-    
+
     private static final String TAG = "MainActivity";
-    
-    private FloatingActionButton fabAuth;
-    private TextView textView;
-    private ImageButton imgblood , imgwater , imgprofile , imgweight , imgsleep , imgstep ;
+    TextView tvUserName, tvUserAge, tvUserGender, tvUserHeight, tvUserWeight, tvUserBMIStatus, tvUserStepsStats, tvUserWaterStats;
+    MaterialCardView cardWater, cardSleep, cardBlood, cardWeight, cardSteps, cardProfile;
     private HealthTrackingApp app;
-    
+    private WeightRecordRepository weightRepo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        
+
         setupWindowInsets();
         initApp();
         observeAuthState();
     }
-    
+
     private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -56,12 +53,13 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
-    
+
     private void initApp() {
         app = (HealthTrackingApp) getApplication();
         app.getAuthRepository().init();
+        weightRepo = app.getWeightRecordRepository();
     }
-    
+
     private void observeAuthState() {
         app.getAuthState().observe(this, authState -> {
             Log.d(TAG, "AuthState changed: " + authState);
@@ -73,17 +71,12 @@ public class MainActivity extends AppCompatActivity {
                 redirectToAuth();
             } else if (authState.isAuthenticated()) {
                 User profile = ((AuthState.Authenticated) authState).getProfile();
-
-                Log.d(TAG, "User authenticated: " + profile.toString());
-                
-                if (profile.hasCompletedOnboarding()) {
-                    Log.d(TAG, "User authenticated and onboarded, setting up main UI");
-                    setupMainUI(profile);
-                } else {
-                    Log.d(TAG, "User needs onboarding, redirecting");
+                Log.d(TAG, "Profile: " + profile);
+                if (!profile.hasCompletedOnboarding()) {
                     redirectToOnboarding();
+                } else {
+                    setupMainUI(profile);
                 }
-                
             } else if (authState.isError()) {
                 AuthState.Error error = (AuthState.Error) authState;
                 Log.e(TAG, "Auth error: " + error.getMessage());
@@ -91,53 +84,86 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    
+
     private void setupMainUI(User user) {
         initViews();
         setupClickListeners();
+        setupUserInfo(user);
     }
-    
+
     private void initViews() {
-        fabAuth = findViewById(R.id.fab_auth);
-        imgblood = findViewById(R.id.img_blood);
-        imgprofile = findViewById(R.id.img_profile);
-        imgsleep = findViewById(R.id.img_sleep);
-        imgstep = findViewById(R.id.img_step);
-        imgwater = findViewById(R.id.img_water);
-        imgweight = findViewById(R.id.img_weight);
+        tvUserName = findViewById(R.id.tv_user_name);
+        tvUserAge = findViewById(R.id.tv_user_age);
+        tvUserGender = findViewById(R.id.tv_user_gender);
+        tvUserHeight = findViewById(R.id.tv_user_height);
+        tvUserWeight = findViewById(R.id.tv_user_weight);
+        tvUserBMIStatus = findViewById(R.id.tv_bmi_status);
+        tvUserStepsStats = findViewById(R.id.tv_steps_stats);
+        tvUserWaterStats = findViewById(R.id.tv_water_stats);
+
+        cardWater = findViewById(R.id.card_water);
+        cardSleep = findViewById(R.id.card_sleep);
+        cardBlood = findViewById(R.id.card_blood);
+        cardWeight = findViewById(R.id.card_weight);
+        cardSteps = findViewById(R.id.card_steps);
+        cardProfile = findViewById(R.id.card_profile);
+    }
+
+    private void setupUserInfo(User user) {
+        tvUserName.setText(user.getName());
+        tvUserAge.setText(String.valueOf(user.getAge()));
+        tvUserGender.setText(user.getGender());
+        tvUserHeight.setText(String.valueOf(user.getHeight()));
+        setupWeightInfo(user);
+        setupWaterInfo(user);
+    }
+
+    private void setupWeightInfo(User user) {
+        weightRepo.getLatestByUserIdLiveData(user.getUid()).observe(this, weightRecord -> {
+            if (weightRecord != null) {
+                tvUserWeight.setText(String.valueOf(weightRecord.getWeight()));
+
+                double bmi = BMICal.calculateBMI(weightRecord.getWeight(), user.getHeight());
+                String bmiStatus = BMICal.getBMICategory(bmi);
+                tvUserBMIStatus.setText(bmiStatus);
+            }
+        });
+    }
+
+    private void setupWaterInfo(User user) {
+        int totalWaterToday = WaterDataManager.getTotalWater(this);
+        Log.d(TAG, "Total water today: " + totalWaterToday);
+        tvUserWaterStats.setText(String.valueOf(totalWaterToday));
     }
 
     private void setupClickListeners() {
-        if (fabAuth != null) {
-            fabAuth.setOnClickListener(v -> redirectToUserSettings());
+        if (cardWater != null) {
+            cardWater.setOnClickListener(v -> redirectToWaterMonitoring());
         }
-        if (imgwater != null) {
-            imgwater.setOnClickListener(v -> redirectToWaterMonitoring());
+        if (cardSleep != null) {
+            cardSleep.setOnClickListener(v -> redirectToSleepTracker());
         }
-        if (imgsleep != null) {
-            imgsleep.setOnClickListener(v -> redirectToSleepTracker());
+        if (cardBlood != null) {
+            cardBlood.setOnClickListener(v -> redirectToBloodPressure());
         }
-        if (imgblood != null) {
-            imgblood.setOnClickListener(v -> redirectToBloodPressure());
+        if (cardWeight != null) {
+            cardWeight.setOnClickListener(v -> redirectToWeightTracker());
         }
-        if (imgweight != null) {
-            imgweight.setOnClickListener(v -> redirectToWeightTracker());
+        if (cardSteps != null) {
+            cardSteps.setOnClickListener(v -> redirectToStepActivity());
         }
-        if (imgstep != null) {
-            imgstep.setOnClickListener(v -> redirectToStepActivity());
-        }
-        if (imgprofile != null) {
-            imgprofile.setOnClickListener(v -> redirectToUserSettings());
+        if (cardProfile != null) {
+            cardProfile.setOnClickListener(v -> redirectToUserSettings());
         }
     }
-    
+
     private void redirectToAuth() {
         Intent intent = new Intent(this, AuthActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
-    
+
     private void redirectToOnboarding() {
         Intent intent = new Intent(this, OnboardingActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -174,5 +200,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, WeightTrackerActivity.class);
         startActivity(intent);
     }
-    
+
 }

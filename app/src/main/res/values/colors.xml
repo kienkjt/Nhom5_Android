@@ -68,4 +68,40 @@
 
     <!-- From cherry-pick still referenced somewhere -->
     <color name="teal_700">#F44336</color>
+
+    <!-- Primary Colors -->
+    <color name="primary">#4facfe</color>
+    <color name="primary_dark">#00f2fe</color>
+    <color name="accent">#00b894</color>
+
+    <!-- Header Colors -->
+    <color name="header_gradient_start">#4facfe</color>
+    <color name="header_gradient_end">#00f2fe</color>
+
+    <!-- Icon Background Colors -->
+    <color name="water_start">#74b9ff</color>
+    <color name="water_end">#0984e3</color>
+
+    <color name="blood_start">#fd79a8</color>
+    <color name="blood_end">#e84393</color>
+
+    <color name="weight_start">#fdcb6e</color>
+    <color name="weight_end">#e17055</color>
+
+    <color name="sleep_start">#a29bfe</color>
+    <color name="sleep_end">#6c5ce7</color>
+
+    <color name="steps_start">#55efc4</color>
+    <color name="steps_end">#00b894</color>
+
+    <color name="profile_start">#ff7675</color>
+    <color name="profile_end">#d63031</color>
+
+    <!-- Background Colors -->
+    <color name="background_gradient_start">#667eea</color>
+    <color name="background_gradient_end">#764ba2</color>
+    <color name="stats_background">#f8fafc</color>
+
+    <!-- FAB Color -->
+    <color name="fab_color">#00b894</color>
 </resources>

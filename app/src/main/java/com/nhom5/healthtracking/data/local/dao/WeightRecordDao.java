@@ -13,4 +13,7 @@ public interface WeightRecordDao {
 
   @Query("SELECT * FROM weight_records WHERE user_id = :userId ORDER BY recorded_at DESC")
   List<WeightRecord> getAllByUserId(String userId);
+  
+  @Query("SELECT * FROM weight_records WHERE user_id = :userId ORDER BY recorded_at DESC LIMIT 1")
+  WeightRecord getLatestByUserId(String userId);
 }

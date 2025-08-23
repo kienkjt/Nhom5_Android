@@ -28,6 +28,7 @@ import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.data.local.entity.WeightRecord;
 import com.nhom5.healthtracking.data.repository.UserRepository;
 import com.nhom5.healthtracking.data.repository.WeightRecordRepository;
+import com.nhom5.healthtracking.util.BMICal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,13 +147,10 @@ public class WeightTrackerActivity extends AppCompatActivity {
     }
 
     private void calculateBMI(double weight, float heightMeters) {
-        double bmi = weight / (heightMeters * heightMeters);
+        double bmi = BMICal.calculateBMI(weight, heightMeters);
         tvBMI.setText(String.format("%.1f", bmi));
 
-        String category;
-        if (bmi < 18.5) category = "Gầy";
-        else if (bmi < 24.9) category = "Bình thường";
-        else category = "Thừa cân";
+        String category = BMICal.getBMICategory(bmi);
         tvBMICategory.setText(category);
 
         progressBMI.setMax(40);

@@ -72,8 +72,11 @@
     <string name="toggle_notification">Bật/tắt thông báo</string>
     <string name="toggle_notification_vibration">Rung khi thông báo</string>
 
+    <string name="sync_data">Đồng bộ dữ liệu</string>
+
     <!-- Card 3 -->
     <string name="logout">Đăng xuất</string>
+
 
     <!-- User Settings -->
     <string name="user_settings">Cài đặt người dùng</string>

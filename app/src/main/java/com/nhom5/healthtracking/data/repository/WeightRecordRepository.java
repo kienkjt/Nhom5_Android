@@ -63,6 +63,15 @@ public class WeightRecordRepository {
     return liveData;
   }
 
+  public LiveData<WeightRecord> getLatestByUserIdLiveData(String userId) {
+    MutableLiveData<WeightRecord> liveData = new MutableLiveData<>();
+    IO.execute(() -> {
+      WeightRecord record = weightRecordDao.getLatestByUserId(userId);
+      liveData.postValue(record);
+    });
+    return liveData;
+  }
+
   // Deprecated - for backward compatibility
   @Deprecated
   public void insert(String userId, double weight, String notes) {

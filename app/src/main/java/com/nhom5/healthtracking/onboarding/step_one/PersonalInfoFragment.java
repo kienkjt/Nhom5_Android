@@ -213,11 +213,11 @@ public class PersonalInfoFragment extends Fragment {
     private String getSelectedGender() {
         int selectedId = rgGender.getCheckedRadioButtonId();
         if (selectedId == R.id.rb_male) {
-            return "Male";
+            return "Nam";
         } else if (selectedId == R.id.rb_female) {
-            return "Female";
+            return "Nữ";
         } else if (selectedId == R.id.rb_other) {
-            return "Other";
+            return "Khác";
         }
         return "";
     }
