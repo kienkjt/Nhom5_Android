@@ -1,5 +1,6 @@
 package com.nhom5.healthtracking.data.local.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -16,4 +17,7 @@ public interface WeightRecordDao {
   
   @Query("SELECT * FROM weight_records WHERE user_id = :userId ORDER BY recorded_at DESC LIMIT 1")
   WeightRecord getLatestByUserId(String userId);
+  
+  @Query("SELECT * FROM weight_records WHERE user_id = :userId ORDER BY recorded_at DESC LIMIT 1")
+  LiveData<WeightRecord> getLatestByUserIdLiveData(String userId);
 }

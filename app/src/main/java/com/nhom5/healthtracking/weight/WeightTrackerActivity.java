@@ -31,6 +31,7 @@ import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.data.local.entity.WeightRecord;
 import com.nhom5.healthtracking.data.repository.UserRepository;
 import com.nhom5.healthtracking.data.repository.WeightRecordRepository;
+import com.nhom5.healthtracking.util.AuthState;
 import com.nhom5.healthtracking.util.BMICal;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class WeightTrackerActivity extends AppCompatActivity {
 
     private HealthTrackingApp app;
 
-    private String currentUserId; // UID thực từ Firebase
+    private User currentUser = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class WeightTrackerActivity extends AppCompatActivity {
         setContentView(R.layout.weight_tracker);
         setupToolbar();
         app = (HealthTrackingApp) getApplication();
+        setupCurrentUser();
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -82,24 +84,14 @@ public class WeightTrackerActivity extends AppCompatActivity {
         userRepo = app.getUserRepository();
         weightRepo = app.getWeightRecordRepository();
 
-        userRepo.observeCurrentUser().observe(this, user -> {
-            if (user != null) {
-                currentUserId = user.getUid();
-                loadWeightData();
-            } else {
-                startActivity(new Intent(this, AuthActivity.class));
-                finish();
-            }
-        });
-
         // --- Xử lý click nút Lưu cân nặng ---
         btnAddWeight.setOnClickListener(v -> {
-            if (currentUserId == null) return;
+            if (currentUser == null) return;
 
             String weightStr = etWeight.getText().toString().trim();
             if (!weightStr.isEmpty()) {
                 double weight = Double.parseDouble(weightStr);
-                weightRepo.insertAsync(currentUserId, weight, "", () -> {
+                weightRepo.insertAsync(currentUser.getUid(), weight, "", () -> {
                     runOnUiThread(() -> {
                         etWeight.setText("");
                         loadWeightData();
@@ -110,9 +102,9 @@ public class WeightTrackerActivity extends AppCompatActivity {
     }
 
     private void loadWeightData() {
-        if (currentUserId == null) return;
+        if (currentUser == null) return;
 
-        weightRepo.getAllByUserIdAsync(currentUserId, records -> {
+        weightRepo.getAllByUserIdAsync(currentUser.getUid(), records -> {
             runOnUiThread(() -> {
                 // Hiển thị cân nặng hiện tại & thay đổi
                 if (!records.isEmpty()) {
@@ -132,10 +124,7 @@ public class WeightTrackerActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Lấy chiều cao từ User
-                    User user = userRepo.observeCurrentUser().getValue();
-                    float heightMeters = user != null && user.getHeight() != null ? user.getHeight() / 100.0f : 1.70f; // Chuyển cm sang m
-                    calculateBMI(currentWeight, heightMeters);
+                    calculateBMI(currentWeight, currentUser.getHeight());
                 }
 
                 // Lịch sử
@@ -156,8 +145,22 @@ public class WeightTrackerActivity extends AppCompatActivity {
         });
     }
 
-    private void calculateBMI(double weight, float heightMeters) {
-        double bmi = BMICal.calculateBMI(weight, heightMeters);
+    private void setupCurrentUser() {
+        app.getAuthState().observe(this, authState -> {
+            if (authState.isAuthenticated()) {
+                currentUser = ((AuthState.Authenticated) authState).getProfile();
+                // Load weight data once we have user info
+                loadWeightData();
+            } else {
+                // Redirect to auth if not authenticated
+                startActivity(new Intent(this, AuthActivity.class));
+                finish();
+            }
+        });
+    }
+
+    private void calculateBMI(double weight, double heightCm) {
+        double bmi = BMICal.calculateBMIFromCm(weight, heightCm);
         tvBMI.setText(String.format("%.1f", bmi));
 
         String category = BMICal.getBMICategory(bmi);

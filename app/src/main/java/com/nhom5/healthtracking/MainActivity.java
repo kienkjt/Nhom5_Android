@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     MaterialCardView cardWater, cardSleep, cardBlood, cardWeight, cardSteps, cardProfile;
     private HealthTrackingApp app;
     private WeightRecordRepository weightRepo;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +71,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "User not authenticated, redirecting to auth");
                 redirectToAuth();
             } else if (authState.isAuthenticated()) {
-                User profile = ((AuthState.Authenticated) authState).getProfile();
-                Log.d(TAG, "Profile: " + profile);
-                if (!profile.hasCompletedOnboarding()) {
+                currentUser = ((AuthState.Authenticated) authState).getProfile();
+                Log.d(TAG, "Profile: " + currentUser);
+                if (!currentUser.hasCompletedOnboarding()) {
                     redirectToOnboarding();
                 } else {
-                    setupMainUI(profile);
+                    setupMainUI();
                 }
             } else if (authState.isError()) {
                 AuthState.Error error = (AuthState.Error) authState;
@@ -85,10 +86,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setupMainUI(User user) {
+    private void setupMainUI() {
         initViews();
         setupClickListeners();
-        setupUserInfo(user);
+        setupUserInfo();
     }
 
     private void initViews() {
@@ -109,28 +110,29 @@ public class MainActivity extends AppCompatActivity {
         cardProfile = findViewById(R.id.card_profile);
     }
 
-    private void setupUserInfo(User user) {
-        tvUserName.setText(user.getName());
-        tvUserAge.setText(String.valueOf(user.getAge()));
-        tvUserGender.setText(user.getGender());
-        tvUserHeight.setText(String.valueOf(user.getHeight()));
-        setupWeightInfo(user);
-        setupWaterInfo(user);
+    private void setupUserInfo() {
+        tvUserName.setText(currentUser.getName());
+        tvUserAge.setText(String.valueOf(currentUser.getAge()));
+        tvUserGender.setText(currentUser.getGender());
+        tvUserHeight.setText(String.valueOf(currentUser.getHeight()));
+        setupWeightInfo();
+        setupWaterInfo();
     }
 
-    private void setupWeightInfo(User user) {
-        weightRepo.getLatestByUserIdLiveData(user.getUid()).observe(this, weightRecord -> {
+    private void setupWeightInfo() {
+        weightRepo.getLatestByUserIdLiveData(currentUser.getUid()).observe(this, weightRecord -> {
             if (weightRecord != null) {
                 tvUserWeight.setText(String.valueOf(weightRecord.getWeight()));
 
-                double bmi = BMICal.calculateBMI(weightRecord.getWeight(), user.getHeight());
+                // Calculate BMI using height in cm
+                double bmi = BMICal.calculateBMIFromCm(weightRecord.getWeight(), currentUser.getHeight());
                 String bmiStatus = BMICal.getBMICategory(bmi);
                 tvUserBMIStatus.setText(bmiStatus);
             }
         });
     }
 
-    private void setupWaterInfo(User user) {
+    private void setupWaterInfo() {
         int totalWaterToday = WaterDataManager.getTotalWater(this);
         Log.d(TAG, "Total water today: " + totalWaterToday);
         tvUserWaterStats.setText(String.valueOf(totalWaterToday));
