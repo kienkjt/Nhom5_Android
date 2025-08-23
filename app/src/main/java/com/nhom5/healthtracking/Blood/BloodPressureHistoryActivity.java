@@ -1,8 +1,10 @@
 package com.nhom5.healthtracking.Blood;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
-import androidx.activity.ComponentActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,7 +14,7 @@ import com.nhom5.healthtracking.R;
 
 import java.util.ArrayList;
 
-public class BloodPressureHistoryActivity extends ComponentActivity {
+public class BloodPressureHistoryActivity extends AppCompatActivity {
 
     private BloodPressureViewModel viewModel;
     private BloodPressureAdapter adapter;
@@ -21,10 +23,7 @@ public class BloodPressureHistoryActivity extends ComponentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bp_history);
-
-        // Toolbar
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(v -> finish());
+        setupToolbar();
 
         RecyclerView rvAllHistory = findViewById(R.id.rvAllBPHistory);
         adapter = new BloodPressureAdapter(this, new ArrayList<>());
@@ -45,5 +44,31 @@ public class BloodPressureHistoryActivity extends ComponentActivity {
                 adapter.updateData(records);
             }
         });
+    }
+
+
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle("Lịch sử huyết áp");
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

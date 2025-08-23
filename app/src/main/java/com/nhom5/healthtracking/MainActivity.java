@@ -17,12 +17,15 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nhom5.healthtracking.auth.AuthActivity;
+import com.nhom5.healthtracking.Blood.BloodPressureActivity;
 import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.onboarding.OnboardingActivity;
 import com.nhom5.healthtracking.sleep.SleepTracker;
+import com.nhom5.healthtracking.step.StepActivity;
 import com.nhom5.healthtracking.user_settings.UserSettingsActivity;
 import com.nhom5.healthtracking.util.AuthState;
 import com.nhom5.healthtracking.water.water_Monitoring;
+import com.nhom5.healthtracking.weight.WeightTrackerActivity;
 
 import java.util.Objects;
 
@@ -44,23 +47,6 @@ public class MainActivity extends AppCompatActivity {
         setupWindowInsets();
         initApp();
         observeAuthState();
-        imgwater.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this , water_Monitoring.class);
-                startActivity(intent);
-            }
-        });
-
-        imgsleep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this , SleepTracker.class);
-                startActivity(intent);
-            }
-        });
-
-
     }
     
     private void setupWindowInsets() {
@@ -85,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             } else if (authState.isUnauthenticated()) {
                 Log.d(TAG, "User not authenticated, redirecting to auth");
                 redirectToAuth();
-                
             } else if (authState.isAuthenticated()) {
                 User profile = ((AuthState.Authenticated) authState).getProfile();
 
@@ -110,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
     private void setupMainUI(User user) {
         initViews();
         setupClickListeners();
-        displayUserInfo(user);
     }
     
     private void initViews() {
@@ -122,19 +106,28 @@ public class MainActivity extends AppCompatActivity {
         imgwater = findViewById(R.id.img_water);
         imgweight = findViewById(R.id.img_weight);
     }
-    
-    private void displayUserInfo(User user) {
-        if (user != null) {
-            String displayText = user.name != null && !user.name.isEmpty() 
-                ? "Xin chào, " + user.name 
-                : user.email != null ? user.email : "Unknown User";
-            textView.setText(displayText);
-        }
-    }
-    
+
     private void setupClickListeners() {
         if (fabAuth != null) {
             fabAuth.setOnClickListener(v -> redirectToUserSettings());
+        }
+        if (imgwater != null) {
+            imgwater.setOnClickListener(v -> redirectToWaterMonitoring());
+        }
+        if (imgsleep != null) {
+            imgsleep.setOnClickListener(v -> redirectToSleepTracker());
+        }
+        if (imgblood != null) {
+            imgblood.setOnClickListener(v -> redirectToBloodPressure());
+        }
+        if (imgweight != null) {
+            imgweight.setOnClickListener(v -> redirectToWeightTracker());
+        }
+        if (imgstep != null) {
+            imgstep.setOnClickListener(v -> redirectToStepActivity());
+        }
+        if (imgprofile != null) {
+            imgprofile.setOnClickListener(v -> redirectToUserSettings());
         }
     }
     
@@ -156,4 +149,30 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, UserSettingsActivity.class);
         startActivity(intent);
     }
+
+    private void redirectToWaterMonitoring() {
+        Intent intent = new Intent(this, water_Monitoring.class);
+        startActivity(intent);
+    }
+
+    private void redirectToSleepTracker() {
+        Intent intent = new Intent(this, SleepTracker.class);
+        startActivity(intent);
+    }
+
+    private void redirectToBloodPressure() {
+        Intent intent = new Intent(this, BloodPressureActivity.class);
+        startActivity(intent);
+    }
+
+    private void redirectToStepActivity() {
+        Intent intent = new Intent(this, StepActivity.class);
+        startActivity(intent);
+    }
+
+    private void redirectToWeightTracker() {
+        Intent intent = new Intent(this, WeightTrackerActivity.class);
+        startActivity(intent);
+    }
+    
 }

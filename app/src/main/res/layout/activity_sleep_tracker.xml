@@ -5,40 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="20dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:background="#F8F9FA">
-
-    <!-- Header -->
-    <LinearLayout
+    android:background="#F8F9FA"
+    tools:context=".sleep.SleepTracker"
+    >
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#2B4C7E"
-        android:padding="16dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="315dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Sleep Tracker"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@drawable/moon2"
-            android:tint="#FFFFFF"
-            tools:ignore="UseAppTint" />
-    </LinearLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    <LinearLayout
+        android:id="@+id/contentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="16dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        >
 
     <!-- Chart: Bar chart -->
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/barChart"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="12dp" />
@@ -211,4 +205,5 @@
         android:layout_gravity="center"
         android:textColor="#40C4FF"
         android:text="View History" />
+    </LinearLayout>
 </LinearLayout>

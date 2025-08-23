@@ -3,19 +3,21 @@ package com.nhom5.healthtracking.sleep;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import com.nhom5.healthtracking.R;
 import java.util.ArrayList;
 
 public class HistorySleep extends AppCompatActivity {
 
     ListView listView;
-    Button btnback ;
     ArrayList<String> sleepHistory;
     SharedPreferences prefs;
     private static final String PREFS_NAME = "SleepTrackerPrefs";
@@ -26,18 +28,11 @@ public class HistorySleep extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_sleep);
+        setupToolbar();
 
-        btnback = findViewById(R.id.btnBack);
         listView = findViewById(R.id.lv_history);
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-
-        btnback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         String savedData = prefs.getString(KEY_HISTORY, "");
         sleepHistory = new ArrayList<>();
 
@@ -52,5 +47,30 @@ public class HistorySleep extends AppCompatActivity {
                 this, android.R.layout.simple_list_item_1, sleepHistory
         );
         listView.setAdapter(adapter);
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle("Theo dõi giấc ngủ");
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

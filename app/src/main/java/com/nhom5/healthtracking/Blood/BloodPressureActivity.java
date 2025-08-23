@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.ComponentActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -26,13 +28,13 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.nhom5.healthtracking.R;
 import com.nhom5.healthtracking.data.local.entity.BloodPressureRecord;
+import com.nhom5.healthtracking.step.StepActivity;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class BloodPressureActivity extends ComponentActivity {
-
+public class BloodPressureActivity extends AppCompatActivity {
     private BloodPressureViewModel viewModel;
 
     private TextView tvCurrentBP, tvBPCategory, tvHistoryTitle;
@@ -51,26 +53,21 @@ public class BloodPressureActivity extends ComponentActivity {
         setContentView(R.layout.blood_pressure);
 
         // Toolbar
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(v -> finish());
+        setupToolbar();
 
         // Views
-        tvCurrentBP     = findViewById(R.id.tvCurrentBP);
-        tvBPCategory    = findViewById(R.id.tvBPCategory);
-        tvHistoryTitle  = findViewById(R.id.tvHistoryTitle);
-        etSystolic      = findViewById(R.id.etSystolic);
-        etDiastolic     = findViewById(R.id.etDiastolic);
-        etNote          = findViewById(R.id.etNote);
-        btnAddBP        = findViewById(R.id.btnAddBP);
-        chartBP         = findViewById(R.id.chartBP);
-        spinnerMode     = findViewById(R.id.spinnerMode);
+        tvCurrentBP = findViewById(R.id.tvCurrentBP);
+        tvBPCategory = findViewById(R.id.tvBPCategory);
+        tvHistoryTitle = findViewById(R.id.tvHistoryTitle);
+        etSystolic = findViewById(R.id.etSystolic);
+        etDiastolic = findViewById(R.id.etDiastolic);
+        etNote = findViewById(R.id.etNote);
+        btnAddBP = findViewById(R.id.btnAddBP);
+        chartBP = findViewById(R.id.chartBP);
+        spinnerMode = findViewById(R.id.spinnerMode);
 
         // Spinner chế độ hiển thị
-        ArrayAdapter<String> modeAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                new String[]{"Cả hai", "Chỉ Sys", "Chỉ Dia"}
-        );
+        ArrayAdapter<String> modeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"Cả hai", "Chỉ Sys", "Chỉ Dia"});
         modeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMode.setAdapter(modeAdapter);
         spinnerMode.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
@@ -79,7 +76,10 @@ public class BloodPressureActivity extends ComponentActivity {
                 chartMode = parent.getItemAtPosition(position).toString();
                 updateChart(allRecords);
             }
-            @Override public void onNothingSelected(android.widget.AdapterView<?> parent) { }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+            }
         });
 
         // ViewModel
@@ -113,15 +113,14 @@ public class BloodPressureActivity extends ComponentActivity {
 
         // Nhấn "Lịch sử huyết áp" -> trang lịch sử đầy đủ
         tvHistoryTitle.setOnClickListener(v -> {
-            Intent intent = new Intent(this, BloodPressureHistoryActivity.class);
-            startActivity(intent);
+            redirectToHistoryActivity();
         });
 
         // Thêm bản ghi
         btnAddBP.setOnClickListener(v -> {
             String sysStr = etSystolic.getText() == null ? "" : etSystolic.getText().toString().trim();
             String diaStr = etDiastolic.getText() == null ? "" : etDiastolic.getText().toString().trim();
-            String note   = etNote.getText() == null ? "" : etNote.getText().toString().trim();
+            String note = etNote.getText() == null ? "" : etNote.getText().toString().trim();
 
             if (sysStr.isEmpty() || diaStr.isEmpty()) {
                 Toast.makeText(this, "Nhập đủ chỉ số", Toast.LENGTH_SHORT).show();
@@ -190,7 +189,8 @@ public class BloodPressureActivity extends ComponentActivity {
         xAxis.setGranularity(1f);
         xAxis.setLabelCount(Math.min(records.size(), 6), true);
         xAxis.setValueFormatter(new ValueFormatter() {
-            @Override public String getAxisLabel(float value, AxisBase axis) {
+            @Override
+            public String getAxisLabel(float value, AxisBase axis) {
                 int index = (int) value;
                 if (index >= 0 && index < records.size()) {
                     return String.valueOf(index + 1); // Lần đo
@@ -219,5 +219,34 @@ public class BloodPressureActivity extends ComponentActivity {
         if (sys < 120 && dia < 80) return "Bình thường";
         if (sys <= 139 || dia <= 89) return "Tiền cao huyết áp";
         return "Cao huyết áp";
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle("Theo dõi huyết áp");
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+    private void redirectToHistoryActivity() {
+        Intent intent = new Intent(this, BloodPressureHistoryActivity.class);
+        startActivity(intent);
     }
 }

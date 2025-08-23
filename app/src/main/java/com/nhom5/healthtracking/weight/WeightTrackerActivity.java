@@ -3,6 +3,7 @@ package com.nhom5.healthtracking.weight;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,20 +21,20 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.nhom5.healthtracking.HealthTrackingApp;
 import com.nhom5.healthtracking.R;
 import com.nhom5.healthtracking.auth.AuthActivity;
 import com.nhom5.healthtracking.data.local.entity.User;
 import com.nhom5.healthtracking.data.local.entity.WeightRecord;
 import com.nhom5.healthtracking.data.repository.UserRepository;
-import com.nhom5.healthtracking.util.DatabaseHelper;
+import com.nhom5.healthtracking.data.repository.WeightRecordRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WeightTrackerActivity extends AppCompatActivity {
-
-    private DatabaseHelper dbHelper;
     private UserRepository userRepo;
+    private WeightRecordRepository weightRepo;
 
     private EditText etWeight;
     private TextView tvCurrentWeight, tvWeightChange, tvBMI, tvBMICategory;
@@ -42,14 +43,16 @@ public class WeightTrackerActivity extends AppCompatActivity {
     private LineChart chartWeight;
     private Button btnAddWeight;
 
+    private HealthTrackingApp app;
+
     private String currentUserId; // UID thực từ Firebase
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.weight_tracker);
-
-        dbHelper = new DatabaseHelper(this);
+        setupToolbar();
+        app = (HealthTrackingApp) getApplication();
 
         // --- Ánh xạ view ---
         etWeight = findViewById(R.id.etWeight);
@@ -65,7 +68,9 @@ public class WeightTrackerActivity extends AppCompatActivity {
         rvWeightHistory.setLayoutManager(new LinearLayoutManager(this));
 
         // --- Lấy thông tin user từ Room (đồng bộ với Firebase) ---
-        userRepo = new UserRepository(dbHelper.getAppDatabase().userDao());
+        userRepo = app.getUserRepository();
+        weightRepo = app.getWeightRecordRepository();
+
         userRepo.observeCurrentUser().observe(this, user -> {
             if (user != null) {
                 currentUserId = user.getUid();
@@ -83,9 +88,12 @@ public class WeightTrackerActivity extends AppCompatActivity {
             String weightStr = etWeight.getText().toString().trim();
             if (!weightStr.isEmpty()) {
                 double weight = Double.parseDouble(weightStr);
-                dbHelper.addWeight(currentUserId, weight, "");
-                etWeight.setText("");
-                loadWeightData();
+                weightRepo.insertAsync(currentUserId, weight, "", () -> {
+                    runOnUiThread(() -> {
+                        etWeight.setText("");
+                        loadWeightData();
+                    });
+                });
             }
         });
     }
@@ -93,46 +101,48 @@ public class WeightTrackerActivity extends AppCompatActivity {
     private void loadWeightData() {
         if (currentUserId == null) return;
 
-        List<WeightRecord> records = dbHelper.getAllWeights(currentUserId);
+        weightRepo.getAllByUserIdAsync(currentUserId, records -> {
+            runOnUiThread(() -> {
+                // Hiển thị cân nặng hiện tại & thay đổi
+                if (!records.isEmpty()) {
+                    double currentWeight = records.get(0).getWeight();
+                    tvCurrentWeight.setText(currentWeight + " kg");
 
-        // Hiển thị cân nặng hiện tại & thay đổi
-        if (!records.isEmpty()) {
-            double currentWeight = records.get(0).getWeight();
-            tvCurrentWeight.setText(currentWeight + " kg");
+                    if (records.size() > 1) {
+                        double diff = currentWeight - records.get(1).getWeight();
+                        if (diff > 0) {
+                            tvWeightChange.setText("↑ " + Math.abs(diff) + " kg so với lần trước");
+                            tvWeightChange.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                        } else if (diff < 0) {
+                            tvWeightChange.setText("↓ " + Math.abs(diff) + " kg so với lần trước");
+                            tvWeightChange.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                        } else {
+                            tvWeightChange.setText("Không thay đổi so với lần trước");
+                        }
+                    }
 
-            if (records.size() > 1) {
-                double diff = currentWeight - records.get(1).getWeight();
-                if (diff > 0) {
-                    tvWeightChange.setText("↑ " + Math.abs(diff) + " kg so với lần trước");
-                    tvWeightChange.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-                } else if (diff < 0) {
-                    tvWeightChange.setText("↓ " + Math.abs(diff) + " kg so với lần trước");
-                    tvWeightChange.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                } else {
-                    tvWeightChange.setText("Không thay đổi so với lần trước");
+                    // Lấy chiều cao từ User
+                    User user = userRepo.observeCurrentUser().getValue();
+                    float heightMeters = user != null && user.getHeight() != null ? user.getHeight() / 100.0f : 1.70f; // Chuyển cm sang m
+                    calculateBMI(currentWeight, heightMeters);
                 }
-            }
 
-            // Lấy chiều cao từ User
-            User user = userRepo.observeCurrentUser().getValue();
-            float heightMeters = user != null && user.getHeight() != null ? user.getHeight() / 100.0f : 1.70f; // Chuyển cm sang m
-            calculateBMI(currentWeight, heightMeters);
-        }
+                // Lịch sử
+                rvWeightHistory.setAdapter(new WeightHistoryAdapter(records));
 
-        // Lịch sử
-        rvWeightHistory.setAdapter(new WeightHistoryAdapter(records));
-
-        // Biểu đồ
-        List<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < records.size(); i++) {
-            float weight = (float) records.get(i).getWeight();
-            entries.add(new Entry(i, weight));
-        }
-        LineDataSet dataSet = new LineDataSet(entries, "Cân nặng (kg)");
-        dataSet.setCircleRadius(4f);
-        dataSet.setValueTextSize(10f);
-        chartWeight.setData(new LineData(dataSet));
-        chartWeight.invalidate();
+                // Biểu đồ
+                List<Entry> entries = new ArrayList<>();
+                for (int i = 0; i < records.size(); i++) {
+                    float weight = (float) records.get(i).getWeight();
+                    entries.add(new Entry(i, weight));
+                }
+                LineDataSet dataSet = new LineDataSet(entries, "Cân nặng (kg)");
+                dataSet.setCircleRadius(4f);
+                dataSet.setValueTextSize(10f);
+                chartWeight.setData(new LineData(dataSet));
+                chartWeight.invalidate();
+            });
+        });
     }
 
     private void calculateBMI(double weight, float heightMeters) {
@@ -160,8 +170,7 @@ public class WeightTrackerActivity extends AppCompatActivity {
         @NonNull
         @Override
         public WeightViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_weight_record, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_weight_record, parent, false);
             return new WeightViewHolder(view);
         }
 
@@ -186,5 +195,31 @@ public class WeightTrackerActivity extends AppCompatActivity {
                 tvDate = itemView.findViewById(R.id.tvDateItem);
             }
         }
+    }
+
+
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle("Theo dõi cân nặng");
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
