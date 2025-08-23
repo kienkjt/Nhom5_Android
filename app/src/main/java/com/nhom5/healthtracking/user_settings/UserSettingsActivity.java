@@ -72,23 +72,11 @@ public class UserSettingsActivity extends AppCompatActivity {
         logoutButton = findViewById(R.id.logout_button);
         tvUserName = findViewById(R.id.tv_user_name);
         tvUserEmail = findViewById(R.id.tv_user_email);
-        
-        Log.d(TAG, "initViews() - Views initialized:");
-        Log.d(TAG, "tvUserName: " + (tvUserName != null ? "OK" : "NULL"));
-        Log.d(TAG, "tvUserEmail: " + (tvUserEmail != null ? "OK" : "NULL"));
-        
-        // Set initial text to see if views are working
-        if (tvUserName != null) {
-            tvUserName.setText("Loading...");
-        }
-        if (tvUserEmail != null) {
-            tvUserEmail.setText("Loading...");
-        }
     }
 
     private void setupClickListeners() {
         btnEditProfile.setOnClickListener(v -> {
-            // TODO: Navigate to edit profile screen
+            redirectToEditProfileActivity();
         });
 
         logoutButton.setOnClickListener(v -> {
@@ -165,5 +153,10 @@ public class UserSettingsActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void redirectToEditProfileActivity() {
+        Intent intent = new Intent(this, EditProfileActivity.class);
+        startActivity(intent);
     }
 }

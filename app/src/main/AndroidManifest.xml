@@ -30,6 +30,9 @@
             android:name=".user_settings.UserSettingsActivity"
             android:exported="false" />
         <activity
+            android:name=".user_settings.EditProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".onboarding.OnboardingActivity"
             android:exported="false" />
         <activity
