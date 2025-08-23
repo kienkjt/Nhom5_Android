@@ -115,6 +115,11 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void setupInputFilters() {
+        // Full name input filter - only letters and spaces
+        InputFilter nameFilter = new InputFilter.LengthFilter(50);
+        InputFilter[] nameFilters = {nameFilter, new NameInputFilter()};
+        etFullName.setFilters(nameFilters);
+        
         // Height input filter - only digits and decimal point
         InputFilter heightFilter = new InputFilter.LengthFilter(6);
         InputFilter[] heightFilters = {heightFilter, new DecimalInputFilter()};
@@ -305,6 +310,26 @@ public class EditProfileActivity extends AppCompatActivity {
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         super.onBackPressed();
+    }
+
+    // Input filter for names - only letters and spaces
+    private static class NameInputFilter implements InputFilter {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end,
+                                 android.text.Spanned dest, int dstart, int dend) {
+            StringBuilder builder = new StringBuilder();
+            
+            for (int i = start; i < end; i++) {
+                char c = source.charAt(i);
+                // Allow letters (both Vietnamese and English), spaces
+                if (Character.isLetter(c) || Character.isWhitespace(c)) {
+                    builder.append(c);
+                }
+            }
+            
+            boolean allValid = builder.length() == (end - start);
+            return allValid ? null : builder.toString();
+        }
     }
 
     // Input filter for decimal numbers

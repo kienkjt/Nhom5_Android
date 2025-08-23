@@ -2,6 +2,7 @@ package com.nhom5.healthtracking.onboarding.step_one;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,7 @@ public class PersonalInfoFragment extends Fragment {
         HealthTrackingApp app = (HealthTrackingApp) requireActivity().getApplication();
         mViewModel = new PersonalInfoViewModel(app.getUserRepository());
 
+        setupInputFilters();
         setupListeners();
         observeAuthState();
     }
@@ -74,6 +76,13 @@ public class PersonalInfoFragment extends Fragment {
         tilDateOfBirth = view.findViewById(R.id.til_date_of_birth);
         etDateOfBirth = view.findViewById(R.id.et_date_of_birth);
         btnContinue = view.findViewById(R.id.btn_continue);
+    }
+
+    private void setupInputFilters() {
+        // Full name input filter - only letters and spaces
+        InputFilter nameFilter = new InputFilter.LengthFilter(50);
+        InputFilter[] nameFilters = {nameFilter, new NameInputFilter()};
+        etFullName.setFilters(nameFilters);
     }
 
     private void observeAuthState() {
@@ -220,5 +229,25 @@ public class PersonalInfoFragment extends Fragment {
             return "Khác";
         }
         return "";
+    }
+
+    // Input filter for names - only letters and spaces
+    private static class NameInputFilter implements InputFilter {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end,
+                                 android.text.Spanned dest, int dstart, int dend) {
+            StringBuilder builder = new StringBuilder();
+            
+            for (int i = start; i < end; i++) {
+                char c = source.charAt(i);
+                // Allow letters (both Vietnamese and English), spaces
+                if (Character.isLetter(c) || Character.isWhitespace(c)) {
+                    builder.append(c);
+                }
+            }
+            
+            boolean allValid = builder.length() == (end - start);
+            return allValid ? null : builder.toString();
+        }
     }
 }

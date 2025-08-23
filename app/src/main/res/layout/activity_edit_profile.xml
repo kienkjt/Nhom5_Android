@@ -75,7 +75,7 @@
                             android:id="@+id/et_full_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textPersonName"
+                            android:inputType="textPersonName|textCapWords"
                             android:paddingStart="@dimen/text_input_padding_with_start_icon"
                             android:paddingEnd="0dp"
                             android:textColor="@color/text_primary"
