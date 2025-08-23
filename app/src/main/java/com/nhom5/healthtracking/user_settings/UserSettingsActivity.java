@@ -23,8 +23,6 @@ import com.nhom5.healthtracking.util.AuthState;
 public class UserSettingsActivity extends AppCompatActivity {
     private static final String TAG = "UserSettingsActivity";
 
-    private MaterialSwitch switchNotifications;
-    private MaterialSwitch switchVibrate;
     private MaterialButton btnEditProfile;
     private MaterialButton logoutButton;
     private TextView tvUserName;
@@ -70,8 +68,6 @@ public class UserSettingsActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        switchNotifications = findViewById(R.id.switch_notifications);
-        switchVibrate = findViewById(R.id.switch_vibrate);
         btnEditProfile = findViewById(R.id.btn_edit_profile);
         logoutButton = findViewById(R.id.logout_button);
         tvUserName = findViewById(R.id.tv_user_name);
@@ -98,14 +94,6 @@ public class UserSettingsActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(v -> {
             viewModel.logout();
             redirectToAuth();
-        });
-
-        switchNotifications.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // TODO: Save notification preference
-        });
-
-        switchVibrate.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // TODO: Save vibrate preference
         });
     }
 

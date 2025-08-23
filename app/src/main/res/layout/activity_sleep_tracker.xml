@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#F8F9FA"
+    android:id="@+id/main"
     tools:context=".sleep.SleepTracker"
     >
     <androidx.appcompat.widget.Toolbar
