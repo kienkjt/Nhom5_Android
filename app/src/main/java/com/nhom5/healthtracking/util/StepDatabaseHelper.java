@@ -17,7 +17,7 @@ import java.util.Locale;
 public class StepDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "step_tracker.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TABLE_STEPS = "steps";
 
