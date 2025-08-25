@@ -23,6 +23,7 @@ import com.nhom5.healthtracking.step.StepActivity;
 import com.nhom5.healthtracking.user_settings.UserSettingsActivity;
 import com.nhom5.healthtracking.util.AuthState;
 import com.nhom5.healthtracking.util.BMICal;
+import com.nhom5.healthtracking.util.StepDatabaseHelper;
 import com.nhom5.healthtracking.water.WaterDataManager;
 import com.nhom5.healthtracking.water.water_Monitoring;
 import com.nhom5.healthtracking.weight.WeightTrackerActivity;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private HealthTrackingApp app;
     private WeightRecordRepository weightRepo;
     private User currentUser;
-
+    private StepDatabaseHelper stepDbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         setupClickListeners();
         setupUserInfo();
+        setupStepsInfo();
     }
 
     private void initViews() {
@@ -137,7 +139,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Total water today: " + totalWaterToday);
         tvUserWaterStats.setText(String.valueOf(totalWaterToday));
     }
-
+    private void setupStepsInfo() {
+        stepDbHelper = new StepDatabaseHelper(this);
+        int todaySteps = stepDbHelper.getTodaySteps(1);
+        tvUserStepsStats.setText(String.valueOf(todaySteps));
+    }
     private void setupClickListeners() {
         if (cardWater != null) {
             cardWater.setOnClickListener(v -> redirectToWaterMonitoring());
